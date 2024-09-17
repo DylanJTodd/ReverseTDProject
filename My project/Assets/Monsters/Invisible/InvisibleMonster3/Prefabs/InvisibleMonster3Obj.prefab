@@ -702,7 +702,7 @@ GameObject:
   - component: {fileID: 421066}
   - component: {fileID: 9517452}
   m_Layer: 0
-  m_Name: InvisibleMonster3
+  m_Name: InvisibleMonster3Obj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -2080,7 +2080,7 @@ GameObject:
   - component: {fileID: 8468617057500289297}
   - component: {fileID: 2550935751187727211}
   m_Layer: 0
-  m_Name: HealthMonster1
+  m_Name: HealthMonster1Obj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

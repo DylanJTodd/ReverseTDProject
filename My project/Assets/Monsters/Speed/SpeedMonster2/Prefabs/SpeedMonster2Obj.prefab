@@ -5181,7 +5181,7 @@ GameObject:
   - component: {fileID: 4558266444110246}
   - component: {fileID: 95036879989758482}
   m_Layer: 0
-  m_Name: SpeedMonster2
+  m_Name: SpeedMonster2Obj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

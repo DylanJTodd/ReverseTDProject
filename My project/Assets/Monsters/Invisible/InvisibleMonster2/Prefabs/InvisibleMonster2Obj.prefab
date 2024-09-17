@@ -563,7 +563,7 @@ GameObject:
   - component: {fileID: 4364649805840150}
   - component: {fileID: 95599254065212114}
   m_Layer: 0
-  m_Name: InvisibleMonster2
+  m_Name: InvisibleMonster2Obj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

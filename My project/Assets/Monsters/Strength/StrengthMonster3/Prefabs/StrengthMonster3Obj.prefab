@@ -3200,7 +3200,7 @@ GameObject:
   - component: {fileID: 4876443625621520}
   - component: {fileID: 95309135661054092}
   m_Layer: 0
-  m_Name: StrengthMonster3
+  m_Name: StrengthMonster3Obj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
