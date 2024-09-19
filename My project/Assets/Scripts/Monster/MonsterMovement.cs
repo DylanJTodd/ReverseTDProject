@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,68 +6,100 @@ public class MonsterMovement : MonoBehaviour
     private float interpolate;
     private Monster myMonster;
     private float movementSpeed;
-    private List<Transform[]> waylines;
-    private int currentWaylineIndex = 0;
+    private Transform currentStartPoint;
+    private Transform currentEndPoint;
+    private int currentPathNumber = 1; // Start from path 1
+    public int endPathNumber; // Indicates the final path
 
-    public void Initialize(float interpolateValue, Monster monster)
+    public void Initialize(float interpolateValue, Monster monster, int endPath)
     {
         interpolate = interpolateValue;
         myMonster = monster;
         movementSpeed = myMonster.movementSpeed;
+        endPathNumber = endPath;
 
-        InitializeWaylines();
+        InitializeWayline(currentPathNumber); // Initialize first wayline
     }
 
-    void InitializeWaylines()
+    void InitializeWayline(int pathNumber)
     {
-        waylines = new List<Transform[]>();
-
         GameObject floor = GameObject.Find("Floor");
         Transform pathParent = floor.transform.Find("Path");
 
-        foreach (Transform path in pathParent)
+        Transform path = pathParent.Find(pathNumber.ToString());
+        if (path != null)
         {
-            Transform startPoint = path.Find("Start");
-            Transform endPoint = path.Find("End");
-
-            waylines.Add(new Transform[] { startPoint, endPoint });
+            currentStartPoint = path.Find("Start");
+            currentEndPoint = path.Find("End");
         }
     }
 
     void Update()
     {
-        if (currentWaylineIndex < waylines.Count)
+        if (currentEndPoint != null)
         {
             MoveAlongWayline();
-        }
-        else
-        {
-            Destroy(gameObject);
         }
     }
 
     // Move the monster along the current wayline
     void MoveAlongWayline()
     {
-        Transform startPoint = waylines[currentWaylineIndex][0];
-        Transform endPoint = waylines[currentWaylineIndex][1];
-
-        Vector3 targetPosition = Vector3.Lerp(startPoint.position, endPoint.position, interpolate);
-
+        Vector3 targetPosition = Vector3.Lerp(currentStartPoint.position, currentEndPoint.position, interpolate);
         RotateTowards(targetPosition);
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, movementSpeed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
         {
-            currentWaylineIndex++;
+            if (currentPathNumber == endPathNumber)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                if (!CheckForSignboard()) 
+                {
+                    string nextPathName = (currentPathNumber + 1).ToString();
+                    GameObject nextPath = GameObject.Find(nextPathName);
+
+                    if (nextPath == null || nextPath.transform.parent == null || nextPath.transform.parent.name != "Path")
+                    {
+                        currentPathNumber = endPathNumber;
+                        InitializeWayline(currentPathNumber);
+                    }
+                    else
+                    {
+                        currentPathNumber++;
+                        InitializeWayline(currentPathNumber);
+                    }
+
+                    Debug.Log(currentPathNumber);
+                }
+            }
         }
     }
 
-    // Rotate the monster to face the target position
+    bool CheckForSignboard()
+    {
+        GameObject pathObject = GameObject.Find(currentPathNumber.ToString());
+        if (pathObject != null)
+        {
+            SignboardHandler signboard = pathObject.GetComponentInChildren<SignboardHandler>();
+            if (signboard != null)
+            {
+                currentPathNumber = signboard.GetNextPath();
+                Debug.Log(currentPathNumber);
+                InitializeWayline(currentPathNumber);
+                return true;
+            }
+        }
+        return false;
+    }
+
     void RotateTowards(Vector3 targetPosition)
     {
         Vector3 direction = (targetPosition - transform.position).normalized;
         Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * (movementSpeed*4));
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * (movementSpeed * 4));
     }
 }

@@ -8,6 +8,7 @@ public class SpawningMonster : MonoBehaviour
     public GameObject lineStart;
     public GameObject lineEnd;
     public Transform monsterParent;
+    public int endPathNumber;
 
     public void SpawnMonster(string name)
     {
@@ -22,7 +23,7 @@ public class SpawningMonster : MonoBehaviour
         spawnedMonster.transform.SetParent(monsterParent);
 
         MonsterMovement movementScript = spawnedMonster.AddComponent<MonsterMovement>();
-        movementScript.Initialize(interpolate, monster);
+        movementScript.Initialize(interpolate, monster, endPathNumber);
     }
 }
     
