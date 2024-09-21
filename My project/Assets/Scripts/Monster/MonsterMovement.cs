@@ -34,6 +34,11 @@ public class MonsterMovement : MonoBehaviour
         }
     }
 
+    public void OnMouseDown()
+    {
+        CameraController.instance.followTransform = transform;
+    }
+
     void Update()
     {
         if (currentEndPoint != null)
