@@ -78,7 +78,6 @@ public class MonsterMovement : MonoBehaviour
                         InitializeWayline(currentPathNumber);
                     }
 
-                    Debug.Log(currentPathNumber);
                 }
             }
         }
@@ -93,7 +92,6 @@ public class MonsterMovement : MonoBehaviour
             if (signboard != null)
             {
                 currentPathNumber = signboard.GetNextPath();
-                Debug.Log(currentPathNumber);
                 InitializeWayline(currentPathNumber);
                 return true;
             }

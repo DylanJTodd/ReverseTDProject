@@ -1,7 +1,9 @@
 using UnityEngine;
+using UnityEngine.EventSystems; // Add this for EventSystem
 
 public class CameraController : MonoBehaviour
 {
+    public LayerMask uiLayerMask;
     public static CameraController instance;
     public Transform followTransform;
     public Transform cameraTransform;
@@ -40,8 +42,15 @@ public class CameraController : MonoBehaviour
         currentZoomMagnitude = newZoom.magnitude;
     }
 
-    private void LateUpdate()
+    void LateUpdate()
     {
+        // Check if the mouse is over a UI element
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        {
+            // Skip camera handling if the pointer is over UI
+            return;
+        }
+
         if (followTransform != null)
         {
             HandleTrackingMode();
@@ -51,9 +60,18 @@ public class CameraController : MonoBehaviour
             HandleFreeMode();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0))
         {
-            followTransform = null;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~uiLayerMask))
+            {
+                if (hit.transform != followTransform)
+                {
+                    followTransform = null;
+                }
+            }
         }
 
         ApplyTransformation();
