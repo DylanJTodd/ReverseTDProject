@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class MonsterSpawningHandler : MonoBehaviour
 {
@@ -12,6 +11,11 @@ public class MonsterSpawningHandler : MonoBehaviour
     public Button upArrow;
     public Button downArrow;
     public TextMeshProUGUI upgradeCounterText;
+    public MonsterManager monsterManager;
+    public GameObject costDisplayPrefab;
+    public GameObject lockPrefab;
+
+    public int playerMoney = 5000;
     private int currentTier = 1;
     private const int maxTier = 3;
     private Button[] row1Buttons;
@@ -19,12 +23,17 @@ public class MonsterSpawningHandler : MonoBehaviour
     public Sprite[] healthIcons;
     public Sprite[] strengthIcons;
     public Sprite[] speedIcons;
-    public Sprite[] InvisibleIcons;
+    public Sprite[] invisibleIcons;
     public SpawningMonster spawningMonster;
     private CanvasGroup row2CanvasGroup;
 
+    private Dictionary<string, bool> unlockedMonsters = new Dictionary<string, bool>();
+    private Dictionary<Button, bool> buttonCostDisplayed = new Dictionary<Button, bool>(); // Tracks if cost is displayed
+
     void Start()
     {
+        InitializeUnlockStatus();
+
         row1Buttons = new Button[4] {
             row1.transform.Find("Health").GetComponent<Button>(),
             row1.transform.Find("Strength").GetComponent<Button>(),
@@ -39,16 +48,6 @@ public class MonsterSpawningHandler : MonoBehaviour
             row2.transform.Find("Invisible").GetComponent<Button>()
         };
 
-        row1Buttons[0].onClick.AddListener(() => OnMonsterButtonClick("Health"));
-        row1Buttons[1].onClick.AddListener(() => OnMonsterButtonClick("Strength"));
-        row1Buttons[2].onClick.AddListener(() => OnMonsterButtonClick("Speed"));
-        row1Buttons[3].onClick.AddListener(() => OnMonsterButtonClick("Invisible"));
-
-        row2Buttons[0].onClick.AddListener(() => OnRow2ButtonClick("Health"));
-        row2Buttons[1].onClick.AddListener(() => OnRow2ButtonClick("Strength"));
-        row2Buttons[2].onClick.AddListener(() => OnRow2ButtonClick("Speed"));
-        row2Buttons[3].onClick.AddListener(() => OnRow2ButtonClick("Invisible"));
-
         upArrow.onClick.AddListener(() => ChangeTier(-1));
         downArrow.onClick.AddListener(() => ChangeTier(1));
 
@@ -57,32 +56,193 @@ public class MonsterSpawningHandler : MonoBehaviour
         UpdateUI();
     }
 
-    void OnMonsterButtonClick(string monsterType)
+    void InitializeUnlockStatus()
     {
-        if (IsPointerOverUIElement()) return;
-        StartCoroutine(FlashButton(monsterType));
-        string monsterName = monsterType + "Monster" + currentTier;
-        spawningMonster.SpawnMonster(monsterName);
-    }
+        unlockedMonsters["HealthMonster1"] = false;
+        unlockedMonsters["StrengthMonster1"] = true; // Only StrengthMonster1 is unlocked by default
+        unlockedMonsters["SpeedMonster1"] = false;
+        unlockedMonsters["InvisibleMonster1"] = false;
 
-    IEnumerator FlashButton(string monsterType)
-    {
-        Button button = GetButtonFromMonsterType(monsterType);
-        Image buttonImage = button.transform.Find("Image").GetComponent<Image>();
-        buttonImage.color = new Color32(205, 205, 205, 255);
-        yield return new WaitForSeconds(0.1f);
-        buttonImage.color = Color.white;
-    }
-
-    Button GetButtonFromMonsterType(string monsterType)
-    {
-        switch (monsterType)
+        for (int tier = 2; tier <= maxTier; tier++)
         {
-            case "Health": return row1Buttons[0];
-            case "Strength": return row1Buttons[1];
-            case "Speed": return row1Buttons[2];
-            case "Invisible": return row1Buttons[3];
-            default: return null;
+            unlockedMonsters[$"HealthMonster{tier}"] = false;
+            unlockedMonsters[$"StrengthMonster{tier}"] = false;
+            unlockedMonsters[$"SpeedMonster{tier}"] = false;
+            unlockedMonsters[$"InvisibleMonster{tier}"] = false;
+        }
+    }
+
+    void AssignButtonListeners(Button[] buttons, int tier, bool isRow2)
+    {
+        if (tier < 1 || tier > maxTier) return;
+
+        string[] monsterTypes = { "Health", "Strength", "Speed", "Invisible" };
+
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            string monsterType = monsterTypes[i];
+            string monsterName = $"{monsterType}Monster{tier}";
+
+            int capturedIndex = i;
+            string capturedMonsterType = monsterType;
+            string capturedMonsterName = monsterName;
+
+            buttons[capturedIndex].onClick.RemoveAllListeners();
+            buttonCostDisplayed[buttons[capturedIndex]] = false; // Reset cost display flag
+
+            buttons[capturedIndex].onClick.AddListener(() => OnMonsterButtonClick(capturedMonsterType, tier, buttons[capturedIndex]));
+            UpdateButtonVisual(buttons[capturedIndex], capturedMonsterName);
+
+            if (isRow2 && tier == 1) buttons[capturedIndex].gameObject.SetActive(false); // Hide Row2 if tier is 1
+        }
+    }
+
+    void UpdateButtonVisual(Button button, string monsterName)
+    {
+        // Get the correct icon array based on the monster type
+        Sprite[] iconArray = GetIconArrayForMonsterType(monsterName);
+
+        if (iconArray == null)
+        {
+            Debug.LogError($"No icon array found for monster: {monsterName}");
+            return;
+        }
+
+        // Find the Image component in the button's child hierarchy
+        Transform imageTransform = button.transform.Find("Image");
+
+        if (imageTransform == null)
+        {
+            Debug.LogError($"Button {button.name} does not have an 'Image' child.");
+            return;
+        }
+
+        Image imageComponent = imageTransform.GetComponent<Image>();
+
+        if (imageComponent == null)
+        {
+            Debug.LogError($"Button {button.name}'s child 'Image' does not have an Image component.");
+            return;
+        }
+
+        // Extract the tier number from the monster name and validate it
+        int tier;
+        if (int.TryParse(monsterName.Substring(monsterName.Length - 1), out tier))
+        {
+            tier = Mathf.Clamp(tier - 1, 0, iconArray.Length - 1); // Ensure the tier index is within bounds
+            imageComponent.sprite = iconArray[tier]; // Set the correct icon for the monster's tier
+        }
+        else
+        {
+            Debug.LogError($"Invalid monster name format: {monsterName}. Expected to extract a tier.");
+        }
+
+        // Check if the monster is unlocked and update the lock icon accordingly
+        if (!unlockedMonsters[monsterName])
+        {
+            // Add LockPrefab as a child of the Image object
+            if (imageTransform.Find("Lock") == null)
+            {
+                GameObject lockObj = Instantiate(lockPrefab, imageTransform);
+                lockObj.name = "Lock";
+            }
+        }
+        else
+        {
+            // Remove the lock if the monster is unlocked
+            Transform lockIcon = imageTransform.Find("Lock");
+            if (lockIcon != null)
+            {
+                Destroy(lockIcon.gameObject);
+            }
+        }
+    }
+
+    Sprite[] GetIconArrayForMonsterType(string monsterName)
+    {
+        if (monsterName.Contains("Health"))
+            return healthIcons;
+        else if (monsterName.Contains("Strength"))
+            return strengthIcons;
+        else if (monsterName.Contains("Speed"))
+            return speedIcons;
+        else if (monsterName.Contains("Invisible"))
+            return invisibleIcons;
+        return null;
+    }
+
+    void OnMonsterButtonClick(string monsterType, int tier, Button button)
+    {
+        string monsterName = $"{monsterType}Monster{tier}";
+        Monster monster = monsterManager.GetMonsterByName(monsterName);
+
+        if (!unlockedMonsters[monsterName])
+        {
+            if (buttonCostDisplayed[button])
+            {
+                int unlockCost = GetUnlockCost(tier);
+                if (playerMoney >= unlockCost)
+                {
+                    playerMoney -= unlockCost;
+                    unlockedMonsters[monsterName] = true;
+                    Debug.Log($"Unlocked {monsterName}. Remaining money: {playerMoney}");
+
+                    UpdateButtonVisual(button, monsterName);
+                    HideCostDisplay(button);
+                    buttonCostDisplayed[button] = false;
+                }
+                else
+                {
+                    Debug.Log("Not enough money to unlock this monster!");
+                }
+            }
+            else
+            {
+                ShowCostDisplay(button, monsterName);
+                buttonCostDisplayed[button] = true;
+            }
+        }
+        else
+        {
+            if (playerMoney >= monster.cost)
+            {
+                playerMoney -= monster.cost;
+                spawningMonster.SpawnMonster(monsterName);
+                Debug.Log($"Summoned {monsterName}. Remaining money: {playerMoney}");
+            }
+            else
+            {
+                Debug.Log("Not enough money to summon this monster!");
+            }
+        }
+    }
+
+    void ShowCostDisplay(Button button, string monsterName)
+    {
+        if (!unlockedMonsters[monsterName])
+        {
+            int unlockCost = GetUnlockCost(currentTier);
+            GameObject costDisplay = Instantiate(costDisplayPrefab, button.transform.Find("Image"));
+            costDisplay.name = "CostDisplay";
+            TextMeshProUGUI costText = costDisplay.GetComponentInChildren<TextMeshProUGUI>();
+            costText.text = $"{unlockCost}";
+        }
+        else
+        {
+            Monster monster = monsterManager.GetMonsterByName(monsterName);
+            GameObject costDisplay = Instantiate(costDisplayPrefab, button.transform.Find("Image"));
+            costDisplay.name = "CostDisplay";
+            TextMeshProUGUI costText = costDisplay.GetComponentInChildren<TextMeshProUGUI>();
+            costText.text = $"{monster.cost}";
+        }
+    }
+
+    void HideCostDisplay(Button button)
+    {
+        Transform costDisplay = button.transform.Find("Image/CostDisplay");
+        if (costDisplay != null)
+        {
+            Destroy(costDisplay.gameObject);
         }
     }
 
@@ -93,20 +253,15 @@ public class MonsterSpawningHandler : MonoBehaviour
         UpdateUI();
     }
 
-    void OnRow2ButtonClick(string monsterType)
-    {
-        string monsterName = monsterType + "Monster" + (currentTier - 1);
-        spawningMonster.SpawnMonster(monsterName);
-        ChangeTier(-1); // Move down a tier after spawning the lower-tier monster
-    }
-
     void UpdateUI()
     {
+        upgradeCounterText.text = $"Tier {currentTier}";
+
         if (currentTier == 1)
         {
             SetArrowOpacity(upArrow, 0.6f, false);
             SetArrowOpacity(downArrow, 1f, true);
-            row2CanvasGroup.alpha = 0f; // Hide row2 when in tier 1
+            row2CanvasGroup.alpha = 0f;
             row2CanvasGroup.interactable = false;
         }
         else if (currentTier == maxTier)
@@ -124,46 +279,28 @@ public class MonsterSpawningHandler : MonoBehaviour
             row2CanvasGroup.interactable = true;
         }
 
-        upgradeCounterText.text = GetRomanNumeral(currentTier);
-        row1Buttons[0].transform.Find("Image").GetComponent<Image>().sprite = healthIcons[currentTier - 1];
-        row1Buttons[1].transform.Find("Image").GetComponent<Image>().sprite = strengthIcons[currentTier - 1];
-        row1Buttons[2].transform.Find("Image").GetComponent<Image>().sprite = speedIcons[currentTier - 1];
-        row1Buttons[3].transform.Find("Image").GetComponent<Image>().sprite = InvisibleIcons[currentTier - 1];
-
-        if (currentTier > 1)
-        {
-            row2.SetActive(true);
-            row2Buttons[0].transform.Find("Image").GetComponent<Image>().sprite = healthIcons[currentTier - 2];
-            row2Buttons[1].transform.Find("Image").GetComponent<Image>().sprite = strengthIcons[currentTier - 2];
-            row2Buttons[2].transform.Find("Image").GetComponent<Image>().sprite = speedIcons[currentTier - 2];
-            row2Buttons[3].transform.Find("Image").GetComponent<Image>().sprite = InvisibleIcons[currentTier - 2];
-        }
-        else
-        {
-            row2.SetActive(false);
-        }
+        AssignButtonListeners(row1Buttons, currentTier, false);
+        AssignButtonListeners(row2Buttons, currentTier - 1, true);
     }
 
-    void SetArrowOpacity(Button arrow, float opacity, bool interactable)
+    void SetArrowOpacity(Button arrow, float alpha, bool interactable)
     {
-        Image arrowImage = arrow.GetComponent<Image>();
-        arrowImage.color = new Color(arrowImage.color.r, arrowImage.color.g, arrowImage.color.b, opacity);
-        arrow.interactable = interactable;
+        CanvasGroup canvasGroup = arrow.GetComponent<CanvasGroup>();
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = alpha;
+            arrow.interactable = interactable;
+        }
     }
 
-    string GetRomanNumeral(int tier)
+    int GetUnlockCost(int tier)
     {
         switch (tier)
         {
-            case 1: return "I";
-            case 2: return "II";
-            case 3: return "III";
-            default: return "";
+            case 1: return 150;
+            case 2: return 550;
+            case 3: return 1500;
+            default: return 0;
         }
-    }
-
-    bool IsPointerOverUIElement()
-    {
-        return !EventSystem.current.IsPointerOverGameObject();
     }
 }
