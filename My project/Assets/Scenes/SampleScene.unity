@@ -542,6 +542,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WoodenSign
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 06d67bd0c435d844fa7fd6747e915313, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2476,7 +2480,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3418,7 +3422,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.9334792, y: 0.117000006}
   m_AnchorMax: {x: 0.9334792, y: 0.16651793}
-  m_AnchoredPosition: {x: -2, y: 24.5}
+  m_AnchoredPosition: {x: -2, y: 24.499939}
   m_SizeDelta: {x: 100, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &863682701
@@ -3441,7 +3445,9 @@ MonoBehaviour:
   monsterManager: {fileID: 1678957960}
   costDisplayPrefab: {fileID: 402528065938001665, guid: 375d37556a9560c45ac48c03e9859c1c, type: 3}
   lockPrefab: {fileID: 330370963622199686, guid: ea8450ab9236720459af3a659e73e134, type: 3}
-  playerMoney: 1000
+  CooldownPrefab: {fileID: 4506709109407651700, guid: 70e46c2f3163787468a7e7e0ef74e3d8, type: 3}
+  summonCooldown: 1
+  playerMoney: 100000
   healthIcons:
   - {fileID: 21300000, guid: 574fdbda231180e439a7e40c3ecf20e0, type: 3}
   - {fileID: 21300000, guid: fff174959f7635842a4e7e86a8e8e59c, type: 3}

@@ -24,6 +24,5 @@ public class SignboardHandler : MonoBehaviour
     private void OnMouseDown()
     {
         Flip();
-        Debug.Log("Signboard flipped!");
     }
 }
