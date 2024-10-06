@@ -21,6 +21,9 @@ public class CameraController : MonoBehaviour
     [Header("Boundary Settings")]
     public float boundaryWidth = 500f;
 
+    [Header("Monster Display")]
+    public MonsterDisplayHandler monsterDisplayHandler;
+
     private Vector3 newPosition;
     private Quaternion newRotation;
     private Vector3 newZoom;
@@ -44,10 +47,8 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
-        // Check if the mouse is over a UI element
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
-            // Skip camera handling if the pointer is over UI
             return;
         }
 
@@ -67,9 +68,14 @@ public class CameraController : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~uiLayerMask))
             {
-                if (hit.transform != followTransform)
+                if (hit.transform.CompareTag("Monster"))
+                {
+                    FocusOnMonster(hit.transform);
+                }
+                else
                 {
                     followTransform = null;
+                    monsterDisplayHandler.HideMonsterDisplay();
                 }
             }
         }
@@ -92,6 +98,7 @@ public class CameraController : MonoBehaviour
             if (!Physics.Raycast(ray, out hit) || hit.transform != followTransform)
             {
                 followTransform = null;
+                monsterDisplayHandler.HideMonsterDisplay();
             }
         }
     }
@@ -182,5 +189,11 @@ public class CameraController : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
         cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, newZoom, Time.deltaTime * movementTime);
+    }
+
+    public void FocusOnMonster(Transform monster)
+    {
+        followTransform = monster;
+        monsterDisplayHandler.ShowMonsterDisplay(monster);
     }
 }

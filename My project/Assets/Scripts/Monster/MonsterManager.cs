@@ -39,11 +39,10 @@ public class MonsterManager : MonoBehaviour
 
             new Monster("InvisibleMonster1", invisibleMonster1Prefab,30, 200, 50, 1, 1f),
             new Monster("InvisibleMonster2", invisibleMonster2Prefab, 100, 750, 250, 1, 1f),
-            new Monster("InvisibleMonster3", invisibleMonster3Prefab,400, 1, 15000, 2000, 0.7f)
+            new Monster("InvisibleMonster3", invisibleMonster3Prefab,400, 15000, 2000, 1, 0.7f)
         };
     }
 
-    // Method to find a monster by name
     public Monster GetMonsterByName(string monsterName)
     {
         return monsters.Find(monster => monster.name == monsterName);

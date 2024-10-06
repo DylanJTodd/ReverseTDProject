@@ -16,9 +16,9 @@ public class MonsterSpawningHandler : MonoBehaviour
     public GameObject costDisplayPrefab;
     public GameObject lockPrefab;
     public GameObject CooldownPrefab;
+    public MoneyHandler moneyHandler;
 
     public float summonCooldown = 1f;
-    public int playerMoney = 5000;
 
     private int currentTier = 1;
     private const int maxTier = 3;
@@ -262,9 +262,9 @@ public class MonsterSpawningHandler : MonoBehaviour
             if (buttonCostDisplayed[button])
             {
                 int unlockCost = GetUnlockCost(tier);
-                if (playerMoney >= unlockCost)
+                if (moneyHandler.GetMoney() >= unlockCost)
                 {
-                    playerMoney -= unlockCost;
+                    moneyHandler.RemoveMoney(unlockCost);
                     unlockedMonsters[monsterName] = true;
                     UpdateButtonVisual(button, monsterName);
                     HideCostDisplay(button, monsterName);
@@ -284,14 +284,11 @@ public class MonsterSpawningHandler : MonoBehaviour
 
             if (isRow2)
             {
-                // Store the monster info and switch the tier
                 string storedMonsterType = monsterType;
                 int storedTier = tier;
 
-                // Switch the tier down, so row1 gets updated
                 ChangeTier(-1);
 
-                // Now apply cooldown to the corresponding row1 button
                 Button correspondingButton = FindButtonByMonsterType(row1Buttons, storedMonsterType, storedTier);
                 if (correspondingButton != null)
                 {
@@ -300,12 +297,10 @@ public class MonsterSpawningHandler : MonoBehaviour
             }
             else
             {
-                // Directly apply cooldown to the clicked row1 button
-                if (playerMoney >= monster.cost)
+                if (moneyHandler.GetMoney() >= monster.cost)
                 {
-                    playerMoney -= monster.cost;
+                    moneyHandler.RemoveMoney(monster.cost);
                     spawningMonster.SpawnMonster(monsterName);
-
                     ApplyCooldown(button);
                 }
             }
@@ -314,7 +309,7 @@ public class MonsterSpawningHandler : MonoBehaviour
 
     void ApplyCooldown(Button button)
     {
-        // Ensure no active cooldown exists
+
         if (!activeCooldowns.ContainsKey(button))
         {
             Coroutine cooldownCoroutine = StartCoroutine(HandleCooldown(button));

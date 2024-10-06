@@ -21,6 +21,7 @@ public class SpawningMonster : MonoBehaviour
 
         GameObject spawnedMonster = Instantiate(monster.obj, spawnPosition, Quaternion.identity);
         spawnedMonster.transform.SetParent(monsterParent);
+        spawnedMonster.tag = "Monster";
 
         MonsterMovement movementScript = spawnedMonster.AddComponent<MonsterMovement>();
         movementScript.Initialize(interpolate, monster, endPathNumber);
