@@ -33,6 +33,6 @@ public class SceneFadeIn : MonoBehaviour
         }
 
         fadePanel.alpha = 0f;
-        audioSource.volume = 1f;
+        audioSource.volume = 0.8f;
     }
 }

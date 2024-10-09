@@ -292,6 +292,8 @@ public class MonsterSpawningHandler : MonoBehaviour
                 Button correspondingButton = FindButtonByMonsterType(row1Buttons, storedMonsterType, storedTier);
                 if (correspondingButton != null)
                 {
+                    moneyHandler.RemoveMoney(monster.cost);
+                    spawningMonster.SpawnMonster(monsterName);
                     ApplyCooldown(correspondingButton);
                 }
             }

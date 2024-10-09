@@ -47,10 +47,6 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-        {
-            return;
-        }
 
         if (followTransform != null)
         {
@@ -92,14 +88,46 @@ public class CameraController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (!Physics.Raycast(ray, out hit) || hit.transform != followTransform)
+            if (Physics.Raycast(ray, out hit))
             {
-                followTransform = null;
-                monsterDisplayHandler.HideMonsterDisplay();
+                if ((uiLayerMask & (1 << hit.transform.gameObject.layer)) != 0)
+                {
+                    return;
+                }
+
+                if (hit.transform != followTransform)
+                {
+                    ExitTrackingMode();
+                }
             }
+
+            ExitTrackingMode();
+
+        }
+    }
+
+    void ExitTrackingMode()
+    {
+        followTransform = null;
+        monsterDisplayHandler.HideMonsterDisplay();
+
+        newPosition = transform.position;
+
+        Plane plane = new Plane(Vector3.up, Vector3.zero);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        float entry;
+        if (plane.Raycast(ray, out entry))
+        {
+            dragStartPosition = ray.GetPoint(entry);
+            dragCurrentPosition = dragStartPosition;
         }
     }
 
@@ -133,6 +161,7 @@ public class CameraController : MonoBehaviour
             {
                 dragCurrentPosition = ray.GetPoint(entry);
                 Vector3 dragDelta = dragStartPosition - dragCurrentPosition;
+
                 float zoomFactor = Mathf.Log(currentZoomMagnitude, 2) * 0.2f;
                 newPosition = transform.position + dragDelta * zoomFactor;
                 newPosition = ClampPositionToBoundary(newPosition);

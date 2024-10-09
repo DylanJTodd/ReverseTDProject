@@ -8,8 +8,9 @@ public class MonsterMovement : MonoBehaviour
     private float movementSpeed;
     private Transform currentStartPoint;
     private Transform currentEndPoint;
-    private int currentPathNumber = 1; // Start from path 1
-    public int endPathNumber; // Indicates the final path
+    private int currentPathNumber = 1;
+    public int endPathNumber;
+    public CastleHealth castleHealth;
 
     public void Initialize(float interpolateValue, Monster monster, int endPath)
     {
@@ -18,7 +19,8 @@ public class MonsterMovement : MonoBehaviour
         movementSpeed = myMonster.movementSpeed;
         endPathNumber = endPath;
 
-        InitializeWayline(currentPathNumber); // Initialize first wayline
+
+        InitializeWayline(currentPathNumber);
     }
 
     void InitializeWayline(int pathNumber)
@@ -47,7 +49,6 @@ public class MonsterMovement : MonoBehaviour
         }
     }
 
-    // Move the monster along the current wayline
     void MoveAlongWayline()
     {
         Vector3 targetPosition = Vector3.Lerp(currentStartPoint.position, currentEndPoint.position, interpolate);
@@ -58,6 +59,7 @@ public class MonsterMovement : MonoBehaviour
         {
             if (currentPathNumber == endPathNumber)
             {
+                castleHealth.RemoveHealth(myMonster.damage); // Eventually adjust damage based on monster health
                 Destroy(gameObject);
             }
             else
