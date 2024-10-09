@@ -8,6 +8,7 @@ public class SpawningMonster : MonoBehaviour
     public GameObject lineStart;
     public GameObject lineEnd;
     public Transform monsterParent;
+    public CastleHealth castleHealth;
     public int endPathNumber;
 
     public void SpawnMonster(string name)
@@ -21,8 +22,12 @@ public class SpawningMonster : MonoBehaviour
 
         GameObject spawnedMonster = Instantiate(monster.obj, spawnPosition, Quaternion.identity);
         spawnedMonster.transform.SetParent(monsterParent);
+        spawnedMonster.tag = "Monster";
 
         MonsterMovement movementScript = spawnedMonster.AddComponent<MonsterMovement>();
+
+        movementScript.castleHealth = castleHealth;
+
         movementScript.Initialize(interpolate, monster, endPathNumber);
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class MonsterMovement : MonoBehaviour
 {
@@ -8,8 +9,9 @@ public class MonsterMovement : MonoBehaviour
     private float movementSpeed;
     private Transform currentStartPoint;
     private Transform currentEndPoint;
-    private int currentPathNumber = 1; // Start from path 1
-    public int endPathNumber; // Indicates the final path
+    private int currentPathNumber = 1;
+    public int endPathNumber;
+    public CastleHealth castleHealth;
 
     public void Initialize(float interpolateValue, Monster monster, int endPath)
     {
@@ -18,7 +20,8 @@ public class MonsterMovement : MonoBehaviour
         movementSpeed = myMonster.movementSpeed;
         endPathNumber = endPath;
 
-        InitializeWayline(currentPathNumber); // Initialize first wayline
+
+        InitializeWayline(currentPathNumber);
     }
 
     void InitializeWayline(int pathNumber)
@@ -47,7 +50,6 @@ public class MonsterMovement : MonoBehaviour
         }
     }
 
-    // Move the monster along the current wayline
     void MoveAlongWayline()
     {
         Vector3 targetPosition = Vector3.Lerp(currentStartPoint.position, currentEndPoint.position, interpolate);
@@ -58,6 +60,7 @@ public class MonsterMovement : MonoBehaviour
         {
             if (currentPathNumber == endPathNumber)
             {
+                castleHealth.RemoveHealth(myMonster.damage); // Eventually adjust damage based on monster health
                 Destroy(gameObject);
             }
             else
@@ -65,10 +68,11 @@ public class MonsterMovement : MonoBehaviour
                 if (!CheckForSignboard()) 
                 {
                     string nextPathName = (currentPathNumber + 1).ToString();
-                    GameObject nextPath = GameObject.Find(nextPathName);
+                    Transform nextPath = GameObject.Find("Path").transform.Find(nextPathName.ToString());
 
                     if (nextPath == null || nextPath.transform.parent == null || nextPath.transform.parent.name != "Path")
                     {
+
                         currentPathNumber = endPathNumber;
                         InitializeWayline(currentPathNumber);
                     }
@@ -77,8 +81,6 @@ public class MonsterMovement : MonoBehaviour
                         currentPathNumber++;
                         InitializeWayline(currentPathNumber);
                     }
-
-                    Debug.Log(currentPathNumber);
                 }
             }
         }
@@ -86,14 +88,13 @@ public class MonsterMovement : MonoBehaviour
 
     bool CheckForSignboard()
     {
-        GameObject pathObject = GameObject.Find(currentPathNumber.ToString());
+        Transform pathObject = GameObject.Find("Path").transform.Find(currentPathNumber.ToString());
         if (pathObject != null)
         {
             SignboardHandler signboard = pathObject.GetComponentInChildren<SignboardHandler>();
             if (signboard != null)
             {
                 currentPathNumber = signboard.GetNextPath();
-                Debug.Log(currentPathNumber);
                 InitializeWayline(currentPathNumber);
                 return true;
             }
