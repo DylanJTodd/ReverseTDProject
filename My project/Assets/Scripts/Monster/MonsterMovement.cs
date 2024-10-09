@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class MonsterMovement : MonoBehaviour
 {
@@ -67,10 +68,11 @@ public class MonsterMovement : MonoBehaviour
                 if (!CheckForSignboard()) 
                 {
                     string nextPathName = (currentPathNumber + 1).ToString();
-                    GameObject nextPath = GameObject.Find(nextPathName);
+                    Transform nextPath = GameObject.Find("Path").transform.Find(nextPathName.ToString());
 
                     if (nextPath == null || nextPath.transform.parent == null || nextPath.transform.parent.name != "Path")
                     {
+
                         currentPathNumber = endPathNumber;
                         InitializeWayline(currentPathNumber);
                     }
@@ -79,7 +81,6 @@ public class MonsterMovement : MonoBehaviour
                         currentPathNumber++;
                         InitializeWayline(currentPathNumber);
                     }
-
                 }
             }
         }
@@ -87,7 +88,7 @@ public class MonsterMovement : MonoBehaviour
 
     bool CheckForSignboard()
     {
-        GameObject pathObject = GameObject.Find(currentPathNumber.ToString());
+        Transform pathObject = GameObject.Find("Path").transform.Find(currentPathNumber.ToString());
         if (pathObject != null)
         {
             SignboardHandler signboard = pathObject.GetComponentInChildren<SignboardHandler>();
