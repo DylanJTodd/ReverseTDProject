@@ -1,7 +1,9 @@
 using UnityEngine;
+using UnityEngine.EventSystems; // Add this for EventSystem
 
 public class CameraController : MonoBehaviour
 {
+    public LayerMask uiLayerMask;
     public static CameraController instance;
     public Transform followTransform;
     public Transform cameraTransform;
@@ -18,6 +20,9 @@ public class CameraController : MonoBehaviour
 
     [Header("Boundary Settings")]
     public float boundaryWidth = 500f;
+
+    [Header("Monster Display")]
+    public MonsterDisplayHandler monsterDisplayHandler;
 
     private Vector3 newPosition;
     private Quaternion newRotation;
@@ -40,8 +45,9 @@ public class CameraController : MonoBehaviour
         currentZoomMagnitude = newZoom.magnitude;
     }
 
-    private void LateUpdate()
+    void LateUpdate()
     {
+
         if (followTransform != null)
         {
             HandleTrackingMode();
@@ -51,9 +57,23 @@ public class CameraController : MonoBehaviour
             HandleFreeMode();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0))
         {
-            followTransform = null;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~uiLayerMask))
+            {
+                if (hit.transform.CompareTag("Monster"))
+                {
+                    FocusOnMonster(hit.transform);
+                }
+                else
+                {
+                    followTransform = null;
+                    monsterDisplayHandler.HideMonsterDisplay();
+                }
+            }
         }
 
         ApplyTransformation();
@@ -68,13 +88,46 @@ public class CameraController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (!Physics.Raycast(ray, out hit) || hit.transform != followTransform)
+            if (Physics.Raycast(ray, out hit))
             {
-                followTransform = null;
+                if ((uiLayerMask & (1 << hit.transform.gameObject.layer)) != 0)
+                {
+                    return;
+                }
+
+                if (hit.transform != followTransform)
+                {
+                    ExitTrackingMode();
+                }
             }
+
+            ExitTrackingMode();
+
+        }
+    }
+
+    void ExitTrackingMode()
+    {
+        followTransform = null;
+        monsterDisplayHandler.HideMonsterDisplay();
+
+        newPosition = transform.position;
+
+        Plane plane = new Plane(Vector3.up, Vector3.zero);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        float entry;
+        if (plane.Raycast(ray, out entry))
+        {
+            dragStartPosition = ray.GetPoint(entry);
+            dragCurrentPosition = dragStartPosition;
         }
     }
 
@@ -108,6 +161,7 @@ public class CameraController : MonoBehaviour
             {
                 dragCurrentPosition = ray.GetPoint(entry);
                 Vector3 dragDelta = dragStartPosition - dragCurrentPosition;
+
                 float zoomFactor = Mathf.Log(currentZoomMagnitude, 2) * 0.2f;
                 newPosition = transform.position + dragDelta * zoomFactor;
                 newPosition = ClampPositionToBoundary(newPosition);
@@ -164,5 +218,11 @@ public class CameraController : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
         cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, newZoom, Time.deltaTime * movementTime);
+    }
+
+    public void FocusOnMonster(Transform monster)
+    {
+        followTransform = monster;
+        monsterDisplayHandler.ShowMonsterDisplay(monster);
     }
 }
