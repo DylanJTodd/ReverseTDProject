@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Data;
 using UnityEngine.EventSystems; // Add this for EventSystem
 
 public class CameraController : MonoBehaviour
@@ -15,8 +16,8 @@ public class CameraController : MonoBehaviour
     public Vector3 zoomAmount = new Vector3(0, -5, 5);
 
     [Header("Zoom Limits")]
-    public float minZoom = 10f;
-    public float maxZoom = 100f;
+    public float minZoom = 0f;  // Increased minimum zoom
+    public float maxZoom = 200f; // Increased maximum zoom
 
     [Header("Boundary Settings")]
     public float boundaryWidth = 500f;
@@ -42,7 +43,9 @@ public class CameraController : MonoBehaviour
         newPosition = transform.position;
         newRotation = transform.rotation;
         newZoom = cameraTransform.localPosition;
-        currentZoomMagnitude = newZoom.magnitude;
+        // Set an initial zoom level that's more zoomed out
+        currentZoomMagnitude = (minZoom + maxZoom) / 2f;
+        newZoom = newZoom.normalized * currentZoomMagnitude;
     }
 
     void LateUpdate()
@@ -161,10 +164,10 @@ public class CameraController : MonoBehaviour
             {
                 dragCurrentPosition = ray.GetPoint(entry);
                 Vector3 dragDelta = dragStartPosition - dragCurrentPosition;
-
-                float zoomFactor = Mathf.Log(currentZoomMagnitude, 2) * 0.2f;
+                // Adjust movement speed based on zoom level
+                float zoomFactor = Mathf.Log(currentZoomMagnitude, 2) * 0.5f;
                 newPosition = transform.position + dragDelta * zoomFactor;
-                newPosition = ClampPositionToBoundary(newPosition);
+                newPosition = Map.Boundary.instance.ClampPositionToBoundary(newPosition);
             }
         }
 
@@ -177,7 +180,8 @@ public class CameraController : MonoBehaviour
         {
             float zoomFactor = 1f - Input.mouseScrollDelta.y * 0.1f;
             Vector3 zoomDelta = Vector3.Scale(newZoom, new Vector3(zoomFactor, zoomFactor, zoomFactor)) - newZoom;
-            float zoomSpeed = Mathf.Log(currentZoomMagnitude, 2) * 0.2f;
+            // Increase zoom speed
+            float zoomSpeed = Mathf.Log(currentZoomMagnitude, 2) * 0.4f;
             newZoom += zoomDelta * zoomSpeed;
 
             currentZoomMagnitude = newZoom.magnitude;
@@ -203,28 +207,10 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    Vector3 ClampPositionToBoundary(Vector3 position)
-    {
-        float halfWidth = boundaryWidth * 0.5f;
-        return new Vector3(
-            Mathf.Clamp(position.x, -halfWidth, halfWidth),
-            position.y,
-            Mathf.Clamp(position.z, -halfWidth, halfWidth)
-        );
-    }
-
     void ApplyTransformation()
     {
         transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
         cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, newZoom, Time.deltaTime * movementTime);
-    }
-
-    public void FocusOnMonster(Transform monster)
-    {
-        followTransform = monster;
-
-        Monster myMonster = monster.GetComponent<Monster>();
-        monsterDisplayHandler.ShowMonsterDisplay(myMonster);
     }
 }
