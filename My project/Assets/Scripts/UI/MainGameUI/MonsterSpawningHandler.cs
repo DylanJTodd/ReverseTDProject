@@ -202,7 +202,9 @@ public class MonsterSpawningHandler : MonoBehaviour
 
         if (unlockedMonsters[monsterName])
         {
-            Monster monster = monsterManager.GetMonsterByName(monsterName);
+            GameObject monsterObject = monsterManager.GetMonsterByName(monsterName);
+            Monster monster = monsterObject.GetComponent<Monster>();
+
             GameObject costDisplay = Instantiate(costDisplayPrefab, button.transform.Find("Image"));
             costDisplay.name = "CostDisplay";
             TextMeshProUGUI costText = costDisplay.GetComponentInChildren<TextMeshProUGUI>();
@@ -255,7 +257,8 @@ public class MonsterSpawningHandler : MonoBehaviour
     void OnMonsterButtonClick(string monsterType, int tier, Button button, bool isRow2)
     {
         string monsterName = $"{monsterType}Monster{tier}";
-        Monster monster = monsterManager.GetMonsterByName(monsterName);
+        GameObject monsterObject = monsterManager.GetMonsterByName(monsterName);
+        Monster monster = monsterObject.GetComponent<Monster>();
 
         if (!unlockedMonsters[monsterName])
         {

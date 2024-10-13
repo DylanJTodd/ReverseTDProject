@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
@@ -106,10 +107,18 @@ public class MonsterDisplayHandler : MonoBehaviour
         {
             baseName += fullName[i];
 
-            Monster monster = monsterManager.GetMonsterByName(baseName);
-            if (monster != null)
+            try
             {
-                return monster;
+                GameObject monsterObject = monsterManager.GetMonsterByName(baseName);
+                Monster monster = monsterObject.GetComponent<Monster>();
+
+                if (monster != null)
+                {
+                    return monster;
+                }
+            }
+            catch (Exception ex)
+            {
             }
         }
 

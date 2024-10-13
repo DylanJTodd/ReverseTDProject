@@ -321,13 +321,42 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3e111ef478ee16b43b77b099bb9d6cfe, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5380258842213698459}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3e111ef478ee16b43b77b099bb9d6cfe, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8886543479621992977}
   m_SourcePrefab: {fileID: 100100000, guid: 3e111ef478ee16b43b77b099bb9d6cfe, type: 3}
 --- !u!4 &6178549627241722691 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3e111ef478ee16b43b77b099bb9d6cfe, type: 3}
   m_PrefabInstance: {fileID: 5923402685727380648}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6842461563814488569 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 3e111ef478ee16b43b77b099bb9d6cfe, type: 3}
+  m_PrefabInstance: {fileID: 5923402685727380648}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-8886543479621992977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6842461563814488569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac947754bf203d74da1543d27d6676e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackVFX: {fileID: 3821957744458368610, guid: af4eb368c55040f46a1b4a1fbaeb8e21, type: 3}
+  monsterDisplayHandler: {fileID: 0}
+  towerRadius: 4
+  attackCooldown1: 0.5
+  attackCooldown2: 0.5
+  attackSpeed: 50
+  slowPercent: 50
+  slowTime: 2
+  attackDamage: 50
 --- !u!1001 &6811359547020364609
 PrefabInstance:
   m_ObjectHideFlags: 0
