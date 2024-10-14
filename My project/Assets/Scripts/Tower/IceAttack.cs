@@ -4,7 +4,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
 
-//still need to implement vfx
 public class IceAttack : MonoBehaviour
 {
     public GameObject attackVFX;
@@ -30,34 +29,36 @@ public class IceAttack : MonoBehaviour
     void DetectMonstersInRadius()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, towerRadius);
-        List<Transform> monstersInRange = new List<Transform>();
+        List<Monster> monstersInRange = new List<Monster>();
 
         foreach (var hitCollider in hitColliders)
         {
             if (hitCollider.CompareTag("Monster"))
             {
-                monstersInRange.Add(hitCollider.transform);
+                Monster monster = hitCollider.GetComponent<Monster>();
+                if (monster != null)
+                {
+                    monstersInRange.Add(monster);
+                }
             }
         }
 
         if (monstersInRange.Count == 0) return;
 
-        // Handle first projectile attack
+        monstersInRange.Sort((a, b) => b.GetSpeed().CompareTo(a.GetSpeed()));
+
         if (canAttack1)
         {
-            Transform targetMonster = monstersInRange[0];
-            AttackMonster(targetMonster, 1);
+            AttackMonster(monstersInRange[0], 1);
         }
 
-        // Handle second projectile attack
         if (canAttack2)
         {
-            Transform targetMonster = monstersInRange.Count > 1 ? monstersInRange[1] : monstersInRange[0];
-            AttackMonster(targetMonster, 2);
+            AttackMonster(monstersInRange.Count > 1 ? monstersInRange[1] : monstersInRange[0], 2);
         }
     }
 
-    void AttackMonster(Transform monster, int attackNumber)
+    void AttackMonster(Monster monster, int attackNumber)
     {
         GameObject vfxInstance = Instantiate(attackVFX, transform.position, Quaternion.identity);
         StartCoroutine(MoveVFX(vfxInstance, monster, attackNumber));
@@ -72,35 +73,37 @@ public class IceAttack : MonoBehaviour
         }
     }
 
-    IEnumerator MoveVFX(GameObject vfxInstance, Transform targetMonster, int attackNumber)
+    IEnumerator MoveVFX(GameObject vfxInstance, Monster targetMonster, int attackNumber)
     {
         if (attackNumber == 2)
         {
             yield return new WaitForSeconds(0.1f);
         }
 
-        vfxInstance.transform.LookAt(targetMonster);
-
-        while (vfxInstance != null)
+        if (targetMonster != null)
         {
-            Vector3 direction = (targetMonster.position - vfxInstance.transform.position).normalized;
+            vfxInstance.transform.LookAt(targetMonster.GetComponent<Collider>().bounds.center);
+        }
+
+        while (vfxInstance != null && targetMonster != null)
+        {
+            Vector3 targetPosition = targetMonster.GetComponent<Collider>().bounds.center;
+            Vector3 direction = (targetPosition - vfxInstance.transform.position).normalized;
             vfxInstance.transform.position += direction * attackSpeed * Time.deltaTime;
 
             Quaternion lookRotation = Quaternion.LookRotation(direction);
             vfxInstance.transform.rotation = Quaternion.Slerp(vfxInstance.transform.rotation, lookRotation, Time.deltaTime * attackSpeed);
 
-            if (Vector3.Distance(vfxInstance.transform.position, targetMonster.position) < 0.1f)
+            if (Vector3.Distance(vfxInstance.transform.position, targetPosition) < 0.1f)
             {
                 Destroy(vfxInstance);
 
-                Monster monster = targetMonster.GetComponent<Monster>();
+                targetMonster.AdjustHealth(-attackDamage);
+                monsterDisplayHandler.UpdateHealth(targetMonster);
 
-                monster.AdjustHealth(-attackDamage);
-                monsterDisplayHandler.UpdateHealth(monster);
+                targetMonster.AdjustSpeed(slowPercent, slowTime);
 
-                monster.AdjustSpeed(slowPercent, slowTime);
-
-                if (monster.GetHealth() <= 0)
+                if (targetMonster.GetHealth() <= 0)
                 {
                     monsterDisplayHandler.HideMonsterDisplay();
                 }

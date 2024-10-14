@@ -91,4 +91,9 @@ public class Monster : MonoBehaviour
     {
         return currentHealth;
     }
+
+    public float GetSpeed()
+    {
+        return movementSpeed;
+    }
 }

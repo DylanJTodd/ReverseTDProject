@@ -17,7 +17,7 @@ public class MonsterDisplayHandler : MonoBehaviour
     public Image healthBar;
     public MoneyHandler moneyHandler;
 
-    private Transform focusedMonster;
+    private Monster focusedMonster;
 
     private void Start()
     {
@@ -81,14 +81,18 @@ public class MonsterDisplayHandler : MonoBehaviour
 
     public void UpdateHealth(Monster myMonster)
     {
-        healthBar.fillAmount = myMonster.currentHealth / myMonster.health;
+        if (focusedMonster != null && myMonster == focusedMonster)
+        {
+            healthBar.fillAmount = myMonster.currentHealth / myMonster.health;
+            if (healthBar.fillAmount <= 0)
+            {
+                HideMonsterDisplay();
+            }
+        }
     }
 
-    public void ShowMonsterDisplay(Transform monsterTransform)
+    public void ShowMonsterDisplay(Monster monster)
     {
-        string monsterName = monsterTransform.name;
-        Monster monster = FindMatchingMonster(monsterName);
-
         monsterFeedImage.sprite = GetMonsterIcon(monster.name);
         ChangeChildrenText(monster);
         UpdateHealth(monster);
@@ -96,33 +100,7 @@ public class MonsterDisplayHandler : MonoBehaviour
         moneyHandler.MoveTransform(true);
 
         monsterDisplayCanvasGroup.alpha = 1f;
-        focusedMonster = monsterTransform;
-    }
-
-    private Monster FindMatchingMonster(string fullName)
-    {
-        string baseName = string.Empty;
-
-        for (int i = 0; i < fullName.Length; i++)
-        {
-            baseName += fullName[i];
-
-            try
-            {
-                GameObject monsterObject = monsterManager.GetMonsterByName(baseName);
-                Monster monster = monsterObject.GetComponent<Monster>();
-
-                if (monster != null)
-                {
-                    return monster;
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-        }
-
-        return null;
+        focusedMonster = monster;
     }
 
     public void HideMonsterDisplay()
