@@ -794,6 +794,7 @@ MonoBehaviour:
   heightAdjust: 1
   movementSpeed: 0.7
   currentHealth: 15000
+  cantTarget: 1
 --- !u!1 &153338
 GameObject:
   m_ObjectHideFlags: 0

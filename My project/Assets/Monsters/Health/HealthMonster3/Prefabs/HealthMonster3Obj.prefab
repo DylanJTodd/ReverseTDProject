@@ -113,3 +113,5 @@ MonoBehaviour:
   heightAdjust: 0
   movementSpeed: 0.4
   currentHealth: 100000
+  cantTarget: 0
+  upgradeButtonHandler: {fileID: 0}

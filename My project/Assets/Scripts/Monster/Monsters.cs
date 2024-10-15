@@ -12,6 +12,9 @@ public class Monster : MonoBehaviour
     public float heightAdjust; //Height value from origin to feet
     public float movementSpeed;
     public float currentHealth;
+    public bool cantTarget;
+
+    public UpgradeButtonHandler upgradeButtonHandler;
 
 
     private float maxSpeed;
@@ -23,6 +26,72 @@ public class Monster : MonoBehaviour
     {
         currentHealth = health;
         maxSpeed = movementSpeed;
+
+        if (upgradeButtonHandler == null)
+        {
+            upgradeButtonHandler = FindObjectOfType<UpgradeButtonHandler>();  // Auto-assign UpgradeHandler if not set
+        }
+
+        UpgradeTierStrength(upgradeButtonHandler.strengthUpgrades);
+        UpgradeTierSpeed(upgradeButtonHandler.speedUpgrades);
+        UpgradeTierHealth(upgradeButtonHandler.healthUpgrades);
+    }
+
+    public void UpgradeTierStrength(int tier)
+    {
+        if (tier == 1)
+        {
+            damage = (int)(damage * 1.2f);
+        }
+        if (tier == 2)
+        {
+            damage = (int)(damage * 1.5f);
+        }
+        if (tier == 3)
+        {
+            damage = (int)(damage * 2f);
+        }
+        return;
+    }
+
+    public void UpgradeTierSpeed(int tier)
+    {
+        if (tier == 1)
+        {
+            movementSpeed = movementSpeed * 1.2f;
+            maxSpeed = maxSpeed * 1.2f;
+        }
+        if (tier == 2)
+        {
+            movementSpeed = movementSpeed * 1.5f;
+            maxSpeed = maxSpeed * 1.5f;
+        }
+        if (tier == 3)
+        {
+            movementSpeed = movementSpeed * 2f;
+            maxSpeed = maxSpeed * 2f;
+        }
+        return;
+    }
+
+    public void UpgradeTierHealth(int tier)
+    {
+        if (tier == 1)
+        {
+            health = (int)(health * 1.2f);
+            currentHealth = currentHealth * 1.2f;
+        }
+        if (tier == 2)
+        {
+            health = (int)(health * 1.5f);
+            currentHealth = currentHealth * 1.5f;
+        }
+        if (tier == 3)
+        {
+            health = (int)(health * 2f);
+            currentHealth = currentHealth * 2f;
+        }
+        return;
     }
 
 
@@ -95,5 +164,10 @@ public class Monster : MonoBehaviour
     public float GetSpeed()
     {
         return movementSpeed;
+    }
+
+    public bool CantTarget()
+    {
+        return cantTarget;
     }
 }

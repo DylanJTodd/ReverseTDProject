@@ -1,6 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +12,7 @@ public class UpgradeButtonHandler : MonoBehaviour
     public GameObject strengthProgress;
     public GameObject speedProgress;
     public GameObject healthProgress;
+    public GameObject monsterHolder;
 
     public CanvasGroup upgradePanel;
     public CanvasGroup pricePanel;
@@ -24,9 +23,9 @@ public class UpgradeButtonHandler : MonoBehaviour
 
     private bool isOpened = false;
 
-    private int strengthUpgrades = 0;
-    private int speedUpgrades = 0;
-    private int healthUpgrades = 0;
+    public int strengthUpgrades = 0;
+    public int speedUpgrades = 0;
+    public int healthUpgrades = 0;
 
     void Start()
     {
@@ -39,20 +38,16 @@ public class UpgradeButtonHandler : MonoBehaviour
 
     private void HandleUpgrades(Button clickedButton)
     {
-        if(clickedButton.name == "StrengthUpgrade")
+        if (clickedButton.name == "StrengthUpgrade")
         {
-            if (strengthUpgrades == 3)
-            {
-                return;
-            }
+            if (strengthUpgrades == 3) return;
 
             bool money = BuyUpgrade(strengthUpgrades, strengthProgress);
             if (money)
             {
                 strengthUpgrades += 1;
+                ApplyUpgradeToAllMonsters("strength", strengthUpgrades);
             }
-
-            //Add functionality for adding this to all monsters
 
             if (strengthUpgrades == 3)
             {
@@ -60,25 +55,38 @@ public class UpgradeButtonHandler : MonoBehaviour
                 strengthUpgrade.interactable = false;
             }
         }
-
         else if (clickedButton.name == "SpeedUpgrade")
         {
-            if (speedUpgrades == 3)
-            {
-                return;
-            }
+            if (speedUpgrades == 3) return;
 
             bool money = BuyUpgrade(speedUpgrades, speedProgress);
             if (money)
             {
                 speedUpgrades += 1;
+                ApplyUpgradeToAllMonsters("speed", speedUpgrades);
             }
-            //Add functionality for adding this to all monsters
 
             if (speedUpgrades == 3)
             {
                 pricePanel.alpha = 0;
                 speedUpgrade.interactable = false;
+            }
+        }
+        else if (clickedButton.name == "HealthUpgrade")
+        {
+            if (healthUpgrades == 3) return;
+
+            bool money = BuyUpgrade(healthUpgrades, healthProgress);
+            if (money)
+            {
+                healthUpgrades += 1;
+                ApplyUpgradeToAllMonsters("health", healthUpgrades);
+            }
+
+            if (healthUpgrades == 3)
+            {
+                pricePanel.alpha = 0;
+                healthUpgrade.interactable = false;
             }
         }
 
@@ -104,6 +112,32 @@ public class UpgradeButtonHandler : MonoBehaviour
             }
         }
     }
+
+    private void ApplyUpgradeToAllMonsters(string upgradeType, int tier)
+    {
+        // Loop through all the monsters in the monsterHolder and apply the relevant upgrade
+        foreach (Transform monsterTransform in monsterHolder.transform)
+        {
+            Monster monster = monsterTransform.GetComponent<Monster>();
+
+            if (monster != null)
+            {
+                switch (upgradeType)
+                {
+                    case "strength":
+                        monster.UpgradeTierStrength(tier);
+                        break;
+                    case "speed":
+                        monster.UpgradeTierSpeed(tier);
+                        break;
+                    case "health":
+                        monster.UpgradeTierHealth(tier);
+                        break;
+                }
+            }
+        }
+    }
+
     private void OpenUpgrades()
     {
         if (isOpened)

@@ -182,3 +182,4 @@ MonoBehaviour:
   heightAdjust: 1
   movementSpeed: 1
   currentHealth: 200
+  cantTarget: 1

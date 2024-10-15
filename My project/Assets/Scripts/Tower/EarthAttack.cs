@@ -31,7 +31,7 @@ public class EarthAttack : MonoBehaviour
             if (collider.CompareTag("Monster"))
             {
                 Monster monster = collider.GetComponent<Monster>();
-                if (monster != null)
+                if (monster != null && !monster.CantTarget())
                 {
                     validMonsters.Add(monster);
                 }
@@ -40,11 +40,10 @@ public class EarthAttack : MonoBehaviour
 
         if (validMonsters.Count == 0) return;
 
-        // Find the monster that maximizes the number of monsters in the AOE radius
         Monster targetMonster = FindBestTargetMonster(validMonsters);
         ApplyDamageToMonstersInRadius(targetMonster);
         RotateVFXToTarget(targetMonster);
-        attackVFX.Play(); // Play VFX after rotation
+        attackVFX.Play();
         StartCoroutine(AttackCooldown());
     }
 
@@ -58,8 +57,7 @@ public class EarthAttack : MonoBehaviour
 
     void ResetVFX()
     {
-        attackVFX.transform.rotation = Quaternion.identity;  // Reset rotation
-        Debug.Log($"VFX Reset: Rotation {attackVFX.transform.rotation.eulerAngles}");
+        attackVFX.transform.rotation = Quaternion.identity;
     }
 
     Monster FindBestTargetMonster(List<Monster> validMonsters)
@@ -67,7 +65,6 @@ public class EarthAttack : MonoBehaviour
         Monster bestTarget = null;
         int maxHits = 0;
 
-        // Loop through each monster to see how many others are within the AOE radius around it
         foreach (var monster in validMonsters)
         {
             int hits = CountMonstersInRadius(monster, validMonsters);
@@ -88,7 +85,6 @@ public class EarthAttack : MonoBehaviour
 
         foreach (var monster in validMonsters)
         {
-            // Check distance between the target monster and the others
             if (Vector3.Distance(target.transform.position, monster.transform.position) <= aoeRadius)
             {
                 hits++;
@@ -107,7 +103,7 @@ public class EarthAttack : MonoBehaviour
             if (collider.CompareTag("Monster"))
             {
                 Monster monster = collider.GetComponent<Monster>();
-                if (monster != null)
+                if (monster != null && !monster.CantTarget())
                 {
                     monster.AdjustHealth(-attackDamage);
                     monsterDisplayHandler.UpdateHealth(monster);
@@ -118,19 +114,11 @@ public class EarthAttack : MonoBehaviour
 
     void RotateVFXToTarget(Monster targetMonster)
     {
-        // Calculate the direction to the target monster
         Vector3 directionToMonster = (targetMonster.transform.position - transform.position).normalized;
-
-        // Flatten the direction vector by setting Y to 0 to avoid vertical rotation
         directionToMonster.y = 0;
 
-        // Create a rotation that faces the target monster on the XZ plane
         Quaternion targetRotation = Quaternion.LookRotation(directionToMonster);
 
-        // Rotate the VFX to face the target monster
         attackVFX.transform.rotation = targetRotation;
-
-        Debug.Log($"VFX Rotated (XZ only): Target {targetMonster.transform.position}, Rotation {attackVFX.transform.rotation.eulerAngles}");
     }
 }
-
