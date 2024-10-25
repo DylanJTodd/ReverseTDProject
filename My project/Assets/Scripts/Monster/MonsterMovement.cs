@@ -13,9 +13,11 @@ public class MonsterMovement : MonoBehaviour
     public int endPathNumber;
     public CastleHealth castleHealth;
 
-    public void Initialize(float interpolateValue, Monster monster, int endPath)
+    public void Initialize(float interpolateValue, GameObject monsterObj, int endPath)
     {
         interpolate = interpolateValue;
+
+        Monster monster = monsterObj.GetComponent<Monster>();
         myMonster = monster;
         movementSpeed = myMonster.movementSpeed;
         endPathNumber = endPath;
@@ -44,6 +46,7 @@ public class MonsterMovement : MonoBehaviour
 
     void Update()
     {
+        movementSpeed = myMonster.movementSpeed;
         if (currentEndPoint != null)
         {
             MoveAlongWayline();
@@ -52,6 +55,7 @@ public class MonsterMovement : MonoBehaviour
 
     void MoveAlongWayline()
     {
+        movementSpeed = myMonster.movementSpeed;
         Vector3 targetPosition = Vector3.Lerp(currentStartPoint.position, currentEndPoint.position, interpolate);
         RotateTowards(targetPosition);
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, movementSpeed * Time.deltaTime);
@@ -60,7 +64,7 @@ public class MonsterMovement : MonoBehaviour
         {
             if (currentPathNumber == endPathNumber)
             {
-                castleHealth.RemoveHealth(myMonster.damage); // Eventually adjust damage based on monster health
+                castleHealth.RemoveHealth((int)((myMonster.damage) * (myMonster.currentHealth/myMonster.health)));
                 Destroy(gameObject);
             }
             else

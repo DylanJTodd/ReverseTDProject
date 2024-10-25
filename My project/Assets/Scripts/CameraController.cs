@@ -223,6 +223,8 @@ public class CameraController : MonoBehaviour
     public void FocusOnMonster(Transform monster)
     {
         followTransform = monster;
-        monsterDisplayHandler.ShowMonsterDisplay(monster);
+
+        Monster myMonster = monster.GetComponent<Monster>();
+        monsterDisplayHandler.ShowMonsterDisplay(myMonster);
     }
 }

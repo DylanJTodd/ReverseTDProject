@@ -63,6 +63,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100082, guid: 24c4300f68c986241af51004b72b03f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2534454255516939313}
+    - targetCorrespondingSourceObject: {fileID: 100082, guid: 24c4300f68c986241af51004b72b03f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -7930561342950098036}
   m_SourcePrefab: {fileID: 100100000, guid: 24c4300f68c986241af51004b72b03f2, type: 3}
 --- !u!1 &5845093648841817051 stripped
 GameObject:
@@ -90,3 +93,25 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.5, y: 2.5, z: 1}
   m_Center: {x: 0, y: 1.25, z: 0}
+--- !u!114 &-7930561342950098036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845093648841817051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b06879e6ee494d648bc783b23e913b99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  name: HealthMonster3
+  obj: {fileID: 4483454552521276245, guid: af73d374280da1c4a9c4e45f56cf8c94, type: 3}
+  cost: 400
+  health: 100000
+  damage: 2500
+  heightAdjust: 0
+  movementSpeed: 0.4
+  currentHealth: 100000
+  cantTarget: 0
+  upgradeButtonHandler: {fileID: 0}

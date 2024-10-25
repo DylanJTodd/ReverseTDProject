@@ -3200,6 +3200,7 @@ GameObject:
   - component: {fileID: 4876443625621520}
   - component: {fileID: 95309135661054092}
   - component: {fileID: -559963545476609895}
+  - component: {fileID: 1753215556570793263}
   m_Layer: 0
   m_Name: StrengthMonster3Obj
   m_TagString: Untagged
@@ -3273,6 +3274,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 3.75, z: 1.5}
   m_Center: {x: 0, y: 1.75, z: 0}
+--- !u!114 &1753215556570793263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1862107410815556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b06879e6ee494d648bc783b23e913b99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  name: StrengthMonster3
+  obj: {fileID: 1862107410815556}
+  cost: 350
+  health: 25000
+  damage: 5000
+  heightAdjust: 0
+  movementSpeed: 0.7
+  currentHealth: 25000
 --- !u!1 &1868828153997032
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6899769094566875521}
   - component: {fileID: 7655746008967401612}
+  - component: {fileID: 3764054629209423123}
   m_Layer: 0
   m_Name: SpeedMonster3Obj
   m_TagString: Untagged
@@ -54,6 +55,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2.25, z: 1}
   m_Center: {x: 0, y: 1.1, z: 0.1}
+--- !u!114 &3764054629209423123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6899769094566875523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b06879e6ee494d648bc783b23e913b99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  name: SpeedMonster3
+  obj: {fileID: 6899769094566875523}
+  cost: 300
+  health: 10000
+  damage: 950
+  heightAdjust: 0
+  movementSpeed: 1.5
+  currentHealth: 10000
 --- !u!1001 &6899769093771271050
 PrefabInstance:
   m_ObjectHideFlags: 0
