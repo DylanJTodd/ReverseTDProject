@@ -4,17 +4,56 @@ using UnityEngine;
 public class FireAttack : MonoBehaviour
 {
     public float towerRadius = 8f;
-    public float baseDamage = 50f;  //Per second
-    public float fireDamageOverTime = 10f;
+    public float baseDamage = 10f;
+    public float fireDamageOverTime = 5f;
     public int fireDOTTicks = 10;
 
     public MonsterDisplayHandler monsterDisplayHandler;
 
-    public float switchCooldown = 1f;
+    public float switchCooldown = 2f;
     public LineRenderer beamLineRenderer;
 
     private Transform currentTarget = null;
     private bool canSwitchTarget = true;
+
+    public int tier;
+    public GameObject lightHolder;
+
+    private void Start()
+    {
+        monsterDisplayHandler = FindObjectOfType<MonsterDisplayHandler>();
+
+        if (tier == 1)
+        {
+            SetLightEmissionIntensity(1);
+        }
+
+        if (tier == 2)
+        {
+            baseDamage *= 2.5f;
+            fireDamageOverTime *= 2f;
+            fireDOTTicks = (int)(fireDOTTicks * 1.5);
+            SetLightEmissionIntensity(2.5f);
+        }
+
+        if (tier == 3)
+        {
+            baseDamage *= 10f;
+            fireDamageOverTime *= 10f;
+            fireDOTTicks = (int)(fireDOTTicks * 3);
+            switchCooldown *= 0.5f;
+            SetLightEmissionIntensity(5);
+        }
+    }
+
+    private void SetLightEmissionIntensity(float intensity)
+    {
+        foreach (Transform lightTransform in lightHolder.transform)
+        {
+            Light light = lightTransform.GetComponent<Light>();
+            light.intensity = intensity;
+        }
+    }
 
     void Update()
     {
@@ -65,8 +104,11 @@ public class FireAttack : MonoBehaviour
 
     void FireAtTarget()
     {
-        if (currentTarget == null) return;
-
+        if (currentTarget == null || currentTarget.gameObject == null)
+        {
+            DetectAndLockOntoMonster();
+            return;
+        }
 
         Collider targetCollider = currentTarget.GetComponent<Collider>();
         Vector3 targetPosition = currentTarget.position;
@@ -76,20 +118,23 @@ public class FireAttack : MonoBehaviour
             targetPosition = targetCollider.bounds.center;
         }
 
-        // Update LineRenderer to point to the target
         beamLineRenderer.SetPosition(0, transform.position);
         beamLineRenderer.SetPosition(1, targetPosition);
 
         beamLineRenderer.enabled = true;
 
         Monster monster = currentTarget.GetComponent<Monster>();
-        monster.AdjustHealth(-baseDamage * Time.deltaTime);
-        monster.ApplyDOT(fireDamageOverTime, fireDOTTicks);
-        monsterDisplayHandler.UpdateHealth(monster);
-
-        if (monster.GetHealth() <= 0)
+        if (monster != null)
         {
-            StartCoroutine(SwitchTargetAfterCooldown());
+            monster.AdjustHealth(-baseDamage * Time.deltaTime);
+            monster.ApplyDOT(fireDamageOverTime, fireDOTTicks);
+            monsterDisplayHandler.UpdateHealth(monster);
+
+            if (monster.GetHealth() <= 0)
+            {
+                DetectAndLockOntoMonster();
+                return;
+            }
         }
     }
 

@@ -5,13 +5,51 @@ using UnityEngine;
 public class EarthAttack : MonoBehaviour
 {
     public ParticleSystem attackVFX;
-    public float attackDamage = 2f;
-    public float attackCooldown = 1f;
+    public float attackDamage = 250f;
+    public float attackCooldown = 5f;
     public float towerRadius = 5f;
-    public float aoeRadius = 2f;  // Radius around the target monster for the AOE attack
+    public float aoeRadius = 2f;
+
+    public int tier;
+    public GameObject lightHolder;
     public MonsterDisplayHandler monsterDisplayHandler;
 
     private bool canAttack = true;
+
+    private void Start()
+    {
+        monsterDisplayHandler = FindObjectOfType<MonsterDisplayHandler>();
+
+        if (tier == 1)
+        {
+            SetLightEmissionIntensity(1);
+        }
+
+        if (tier == 2)
+        {
+            attackDamage *= 2.5f;
+            towerRadius *= 1.25f;
+            aoeRadius *= 1.1f;
+            SetLightEmissionIntensity(2.5f);
+        }
+
+        if (tier == 3)
+        {
+            attackDamage *= 20f;
+            towerRadius *= 2f;
+            aoeRadius *= 1.5f;
+            SetLightEmissionIntensity(5);
+        }
+    }
+
+    private void SetLightEmissionIntensity(float intensity)
+    {
+        foreach (Transform lightTransform in lightHolder.transform)
+        {
+            Light light = lightTransform.GetComponent<Light>();
+            light.intensity = intensity;
+        }
+    }
 
     void Update()
     {

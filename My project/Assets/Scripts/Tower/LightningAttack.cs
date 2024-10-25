@@ -17,6 +17,43 @@ public class LightningChainTower : MonoBehaviour
     private bool canAttack = true;
     private List<Monster> activeChainedMonsters;
 
+    public int tier;
+    public GameObject lightHolder;
+
+    private void Start()
+    {
+        monsterDisplayHandler = FindObjectOfType<MonsterDisplayHandler>();
+
+        if (tier == 1)
+        {
+            SetLightEmissionIntensity(1);
+        }
+
+        if (tier == 2)
+        {
+            baseDamage *= 2.5f;
+            maxChain *= 2;
+            SetLightEmissionIntensity(2.5f);
+        }
+
+        if (tier == 3)
+        {
+            baseDamage *= 5f;
+            maxChain *= 3;
+            attackCooldown *= 0.75f;
+            attackRadius *= 1.5f;
+            SetLightEmissionIntensity(5);
+        }
+    }
+
+    private void SetLightEmissionIntensity(float intensity)
+    {
+        foreach (Transform lightTransform in lightHolder.transform)
+        {
+            Light light = lightTransform.GetComponent<Light>();
+            light.intensity = intensity;
+        }
+    }
     void Update()
     {
         if (canAttack)
@@ -53,13 +90,6 @@ public class LightningChainTower : MonoBehaviour
         }
 
         StartCoroutine(AttackCooldown());
-    }
-
-    IEnumerator ChainDurationCoroutine()
-    {
-        yield return new WaitForSeconds(chainDuration);
-        lineRenderer.enabled = false;
-        activeChainedMonsters = null;
     }
 
     IEnumerator AttackCooldown()
@@ -163,33 +193,74 @@ public class LightningChainTower : MonoBehaviour
         lineRenderer.positionCount = 0;
         lineRenderer.enabled = true;
 
-        lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, GetMonsterCenter(chainedMonsters[0]));
+        // Add the initial segment between the tower and the first monster
+        Vector3 initialPosition = GetMonsterCenter(chainedMonsters[0]);
+        if (IsValidPosition(initialPosition))
+        {
+            lineRenderer.positionCount = 2;
+            lineRenderer.SetPosition(0, transform.position);
+            lineRenderer.SetPosition(1, initialPosition);
+        }
+
         yield return new WaitForSeconds((chainDuration / 2) - 0.02f);
 
-        DealDamage(chainedMonsters[0], 1);
+        if (chainedMonsters[0] != null && chainedMonsters[0].gameObject != null)
+        {
+            DealDamage(chainedMonsters[0], 1);
+        }
 
         for (int i = 0; i < chainedMonsters.Count - 1; i++)
         {
+            // Check if monsters are still valid (not destroyed)
             if (chainedMonsters[i] == null || chainedMonsters[i].gameObject == null) continue;
             if (chainedMonsters[i + 1] == null || chainedMonsters[i + 1].gameObject == null) continue;
 
-            lineRenderer.positionCount = i + 3;
-            lineRenderer.SetPosition(i + 1, GetMonsterCenter(chainedMonsters[i]));
-            lineRenderer.SetPosition(i + 2, GetMonsterCenter(chainedMonsters[i + 1]));
+            Vector3 currentPos = GetMonsterCenter(chainedMonsters[i]);
+            Vector3 nextPos = GetMonsterCenter(chainedMonsters[i + 1]);
+
+            // Ensure valid positions before setting
+            if (IsValidPosition(currentPos) && IsValidPosition(nextPos))
+            {
+                lineRenderer.positionCount = i + 3;
+                lineRenderer.SetPosition(i + 1, currentPos);
+                lineRenderer.SetPosition(i + 2, nextPos);
+            }
 
             yield return new WaitForSeconds((chainDuration / 2) - 0.02f);
 
-            DealDamage(chainedMonsters[i + 1], i + 2);
+            if (chainedMonsters[i + 1] != null && chainedMonsters[i + 1].gameObject != null)
+            {
+                DealDamage(chainedMonsters[i + 1], i + 2);
+            }
+
+            // Start a coroutine to remove the chain segment after chainDuration
+            StartCoroutine(RemoveChainSegment(i + 2));
         }
 
-        yield return ChainDurationCoroutine();
+        // Start a coroutine to remove the initial segment after chainDuration
+        StartCoroutine(RemoveChainSegment(1));
+    }
+
+    bool IsValidPosition(Vector3 position)
+    {
+        // Check if the position is (0, 0, 0), which is usually an invalid or unintended value
+        return position != Vector3.zero;
+    }
+
+
+    IEnumerator RemoveChainSegment(int segmentIndex)
+    {
+        yield return new WaitForSeconds(chainDuration);
+
+        if (lineRenderer.positionCount > segmentIndex)
+        {
+            lineRenderer.positionCount = segmentIndex;
+        }
     }
 
     Vector3 GetMonsterCenter(Monster monster)
     {
-        BoxCollider collider = monster.GetComponent<BoxCollider>();
+        Collider collider = monster.GetComponent<Collider>();
         if (collider != null)
         {
             return collider.bounds.center;
@@ -199,10 +270,21 @@ public class LightningChainTower : MonoBehaviour
 
     void DealDamage(Monster monster, int chainLevel)
     {
-        if (monster == null || monster.gameObject == null) return;
-
         float damage = baseDamage * Mathf.Pow(0.9f, chainLevel - 1);
+
+        if (monster == null || monster.gameObject == null || monster.GetHealth() <= 0) return;
+
         monster.AdjustHealth(-damage);
         monsterDisplayHandler.UpdateHealth(monster);
+
+        if (monster.GetHealth() <= 0)
+        {
+            // Immediately remove the chain segment if the monster dies
+            int segmentIndex = activeChainedMonsters.IndexOf(monster);
+            if (segmentIndex >= 0)
+            {
+                StartCoroutine(RemoveChainSegment(segmentIndex + 1));
+            }
+        }
     }
 }

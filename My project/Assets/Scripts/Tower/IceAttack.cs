@@ -16,10 +16,49 @@ public class IceAttack : MonoBehaviour
     public float slowPercent = 50f;
 
     public int slowTime = 2;
-    public float attackDamage = 1f;
+    public float attackDamage = 20f;
 
     private bool canAttack1 = true;
     private bool canAttack2 = true;
+
+    public int tier;
+    public GameObject lightHolder;
+
+    private void Start()
+    {
+        monsterDisplayHandler = FindObjectOfType<MonsterDisplayHandler>();
+
+        if (tier == 1)
+        {
+            SetLightEmissionIntensity(1);
+        }
+
+        if (tier == 2)
+        {
+            attackSpeed *= 1.5f;
+            slowPercent *= 1.2f;
+            attackDamage *= 3.5f;
+            SetLightEmissionIntensity(2.5f);
+        }
+
+        if (tier == 3)
+        {
+            attackSpeed *= 2f;
+            slowPercent *= 1.5f;
+            attackDamage *= 8f;
+            towerRadius *= 1.5f;
+            SetLightEmissionIntensity(5);
+        }
+    }
+
+    private void SetLightEmissionIntensity(float intensity)
+    {
+        foreach (Transform lightTransform in lightHolder.transform)
+        {
+            Light light = lightTransform.GetComponent<Light>();
+            light.intensity = intensity;
+        }
+    }
 
     void Update()
     {
@@ -87,6 +126,12 @@ public class IceAttack : MonoBehaviour
 
         while (vfxInstance != null && targetMonster != null)
         {
+            if (targetMonster == null || targetMonster.gameObject == null)
+            {
+                Destroy(vfxInstance);
+                yield break;
+            }
+
             Vector3 targetPosition = targetMonster.GetComponent<Collider>().bounds.center;
             Vector3 direction = (targetPosition - vfxInstance.transform.position).normalized;
             vfxInstance.transform.position += direction * attackSpeed * Time.deltaTime;
@@ -98,14 +143,16 @@ public class IceAttack : MonoBehaviour
             {
                 Destroy(vfxInstance);
 
-                targetMonster.AdjustHealth(-attackDamage);
-                monsterDisplayHandler.UpdateHealth(targetMonster);
-
-                targetMonster.AdjustSpeed(slowPercent, slowTime);
-
-                if (targetMonster.GetHealth() <= 0)
+                if (targetMonster != null)
                 {
-                    monsterDisplayHandler.HideMonsterDisplay();
+                    targetMonster.AdjustHealth(-attackDamage);
+                    monsterDisplayHandler.UpdateHealth(targetMonster);
+                    targetMonster.AdjustSpeed(slowPercent, slowTime);
+
+                    if (targetMonster.GetHealth() <= 0)
+                    {
+                        monsterDisplayHandler.HideMonsterDisplay();
+                    }
                 }
             }
             yield return null;
