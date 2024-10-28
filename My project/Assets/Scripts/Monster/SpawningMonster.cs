@@ -22,7 +22,7 @@ public class SpawningMonster : MonoBehaviour
         Vector3 spawnAdjustment = new Vector3(0, monster.heightAdjust, 0);
         spawnPosition += spawnAdjustment;
 
-        GameObject spawnedMonster = Instantiate(monster.obj, spawnPosition, Quaternion.identity);
+        GameObject spawnedMonster = Instantiate(monsterObject, spawnPosition, Quaternion.identity);
         spawnedMonster.transform.SetParent(monsterParent);
         spawnedMonster.tag = "Monster";
 

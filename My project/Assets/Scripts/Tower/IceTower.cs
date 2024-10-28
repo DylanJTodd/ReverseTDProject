@@ -1,15 +1,17 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class IceTower : BaseTower
 {
     [Header("Ice Tower Settings")]
     public GameObject iceChunkPrefab;
-    public float attackRange = 15f;
-    public float attackRate = 1f;
+    public new float attackRange = 15f;
+    public new float attackRate = 1f;
     private float lastAttackTime;
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         // Register this tower with the TowerManager
         TowerManager.instance.RegisterTower(this);
     }
@@ -20,7 +22,7 @@ public class IceTower : BaseTower
         // Additional death logic if necessary (e.g., notify other systems)
     }
 
-    protected override void UseAbility()
+    protected override void Attack()
     {
         if (Time.time >= lastAttackTime + attackRate)
         {
@@ -55,8 +57,6 @@ public class IceTower : BaseTower
     {
         // Instantiate ice chunk at tower's position
         GameObject iceChunk = Instantiate(iceChunkPrefab, transform.position, Quaternion.identity);
-        // Initialize ice chunk's movement towards the target
-        // This is a skeleton and needs to be implemented
         IceChunk iceChunkScript = iceChunk.GetComponent<IceChunk>();
         if (iceChunkScript != null)
         {

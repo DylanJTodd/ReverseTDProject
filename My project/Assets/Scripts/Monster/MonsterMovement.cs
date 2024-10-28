@@ -64,7 +64,7 @@ public class MonsterMovement : MonoBehaviour
         {
             if (currentPathNumber == endPathNumber)
             {
-                castleHealth.RemoveHealth((int)((myMonster.damage) * (myMonster.currentHealth/myMonster.health)));
+                castleHealth.RemoveHealth((int)((myMonster.damage) * (myMonster.health/myMonster.health)));
                 Destroy(gameObject);
             }
             else

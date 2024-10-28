@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class MonsterManager : MonoBehaviour
 {
@@ -34,6 +35,16 @@ public class MonsterManager : MonoBehaviour
         {
             monsters.Remove(monster);
         }
+    }
+
+    public List<Monster> GetMonstersInRadius(Vector3 position, int radius)
+    {
+        return monsters.Where(monster => Vector3.Distance(monster.transform.position, position) <= radius).ToList();
+    }
+
+    public GameObject GetMonsterByName(string name)
+    {
+        return monsters.FirstOrDefault(monster => monster.name == name)?.gameObject;
     }
 
     // Additional management methods can be added here

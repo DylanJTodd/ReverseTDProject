@@ -3,10 +3,16 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    public Image fillImage;
+    public Slider slider;
 
-    public void SetHealth(float healthPercentage)
+    public void SetMaxHealth(int health)
     {
-        fillImage.fillAmount = healthPercentage;
+        slider.maxValue = health;
+        slider.value = health;
+    }
+
+    public void SetHealth(int health)
+    {
+        slider.value = health;
     }
 }

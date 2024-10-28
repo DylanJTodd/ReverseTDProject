@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [System.Serializable]
-public class Monster : MonoBehaviour
+public class Monsteraa : MonoBehaviour
 {
     public new string name;
     public GameObject obj;
