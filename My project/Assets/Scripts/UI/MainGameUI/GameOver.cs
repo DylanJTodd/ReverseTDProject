@@ -13,7 +13,7 @@ public class GameOver : MonoBehaviour
         gameOverScreen.alpha = 1;
         gameWon.alpha = 1;
 
-        //SelectLevel.Instance.IncreaseClearedLevel();
+        //electLevel.Instance.IncreaseClearedLevel();
     }
 
     public void GameLost()

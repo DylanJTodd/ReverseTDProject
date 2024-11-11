@@ -22,7 +22,6 @@ public class MonsterMovement : MonoBehaviour
         movementSpeed = myMonster.movementSpeed;
         endPathNumber = endPath;
 
-
         InitializeWayline(currentPathNumber);
     }
 
@@ -64,19 +63,18 @@ public class MonsterMovement : MonoBehaviour
         {
             if (currentPathNumber == endPathNumber)
             {
-                castleHealth.RemoveHealth((int)((myMonster.damage) * (myMonster.currentHealth/myMonster.health)));
+                castleHealth.RemoveHealth((int)((myMonster.damage) * (myMonster.currentHealth / myMonster.health)));
                 Destroy(gameObject);
             }
             else
             {
-                if (!CheckForSignboard()) 
+                if (!CheckForSignboard())
                 {
                     string nextPathName = (currentPathNumber + 1).ToString();
                     Transform nextPath = GameObject.Find("Path").transform.Find(nextPathName.ToString());
 
                     if (nextPath == null || nextPath.transform.parent == null || nextPath.transform.parent.name != "Path")
                     {
-
                         currentPathNumber = endPathNumber;
                         InitializeWayline(currentPathNumber);
                     }
@@ -111,5 +109,22 @@ public class MonsterMovement : MonoBehaviour
         Vector3 direction = (targetPosition - transform.position).normalized;
         Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * (movementSpeed * 4));
+    }
+
+    public void KillMonstersOnPath(int pathNumber)
+    {
+
+        if (pathNumber < 0)
+        {
+            pathNumber *= -1;
+            if (currentPathNumber >= pathNumber)
+            {
+                Destroy(gameObject);
+            }                
+        }
+        if (currentPathNumber == pathNumber)
+        {
+            Destroy(gameObject);
+        }
     }
 }
