@@ -1,28 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
 
-public class LightningChainTower : MonoBehaviour
+public class LightningTower : BaseTower
 {
-    public float attackRadius = 5f;
+    [Header("Lightning Tower Settings")]
     public int maxChain = 3;
     public int maxBranch = 3;
     public float chainRadius = 2f;
-    public float baseDamage = 30f;
     public float chainDuration = 1.5f;
-    public LineRenderer lineRenderer;
-    public MonsterDisplayHandler monsterDisplayHandler;
     public float attackCooldown = 1f;
-
-    private bool canAttack = true;
+    public int maxChainHits = 3;
+    public int attackRadius = 10;
+    public LineRenderer lineRenderer;
     private List<Monster> activeChainedMonsters;
 
-    void Update()
+    protected override void PerformAttack(Transform target)
     {
-        if (canAttack)
+        Monster initialTarget = target.GetComponent<Monster>();
+        if (initialTarget != null)
         {
-            DetectAndChainMonsters();
+            List<Monster> validMonsters = GetMonstersInRange();
+            activeChainedMonsters = new List<Monster>();
+            ChainToMonsters(initialTarget, validMonsters, activeChainedMonsters, 1);
+            StartCoroutine(AnimateLightningChain(activeChainedMonsters));
         }
+    }
+
+    private List<Monster> GetMonstersInRange()
+    {
+        List<Monster> monsters = new List<Monster>();
+        Collider[] colliders = Physics.OverlapSphere(transform.position, attackRadius);
+        foreach (Collider col in colliders)
+        {
+            Monster monster = col.GetComponent<Monster>();
+            if (monster != null)
+            {
+                monsters.Add(monster);
+            }
+        }
+        return monsters;
     }
 
     void DetectAndChainMonsters()
@@ -201,8 +218,7 @@ public class LightningChainTower : MonoBehaviour
     {
         if (monster == null || monster.gameObject == null) return;
 
-        float damage = baseDamage * Mathf.Pow(0.9f, chainLevel - 1);
+        float damage = attackDamage * Mathf.Pow(0.9f, chainLevel - 1);
         monster.AdjustHealth(-damage);
-        monsterDisplayHandler.UpdateHealth(monster);
     }
 }

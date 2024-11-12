@@ -548,18 +548,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 5262173875991009403}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcb27862fe13da04299bfd40f3d46459, type: 3}
+  m_Script: {fileID: 11500000, guid: bfc5c0e232c455c4b918fcc7e8d44199, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRadius: 5
+  health: 100
+  maxHealth: 100
+  maxRange: 10
+  attackRange: 15
+  attackRate: 1
+  splashRadius: 0
+  attackDamage: 10
+  monsterDisplayHandler: {fileID: 0}
+  healthBarPrefab: {fileID: 0}
   maxChain: 3
   maxBranch: 3
-  chainRadius: 3
-  baseDamage: 200
-  chainDuration: 0.2
-  lineRenderer: {fileID: 1191414254870821864}
-  monsterDisplayHandler: {fileID: 0}
-  attackCooldown: 2
+  chainRadius: 2
+  chainDuration: 1.5
+  attackCooldown: 1
+  maxChainHits: 3
+  attackRadius: 10
+  lineRenderer: {fileID: 0}
 --- !u!1001 &6463374679806017348
 PrefabInstance:
   m_ObjectHideFlags: 0

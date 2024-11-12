@@ -256,16 +256,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 3608916091278580895}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7000c494f23eb254bbad96e9dd7a5a61, type: 3}
+  m_Script: {fileID: 11500000, guid: ae2475c67319dd946bb2e0212ac5fed5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerRadius: 8
-  baseDamage: 10
-  fireDamageOverTime: 5
-  fireDOTTicks: 10
+  health: 100
+  maxHealth: 100
+  maxRange: 10
+  attackRange: 15
+  attackRate: 1
+  splashRadius: 0
+  attackDamage: 10
   monsterDisplayHandler: {fileID: 0}
-  switchCooldown: 1
-  beamLineRenderer: {fileID: 4366471279889993645}
+  healthBarPrefab: {fileID: 0}
+  fireDamageOverTime: 10
+  fireDOTTicks: 10
+  beamLineRenderer: {fileID: 0}
 --- !u!1 &6539706518368843039
 GameObject:
   m_ObjectHideFlags: 0

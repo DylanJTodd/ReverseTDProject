@@ -14,7 +14,6 @@ public class MonsterDisplayHandler : MonoBehaviour
     public Sprite[] invisibleIcons;
     public MonsterManager monsterManager;
     public GameObject text;
-    public Image healthBar;
     public MoneyHandler moneyHandler;
 
     private Monster focusedMonster;
@@ -26,26 +25,7 @@ public class MonsterDisplayHandler : MonoBehaviour
 
     private int GetMovementSpeed(float movementSpeed)
     {
-        if (movementSpeed <= 0.41)
-        {
-            return 1;
-        }
-        else if (movementSpeed <= 0.71)
-        {
-            return 2;
-        }
-        else if (movementSpeed <= 1.1)
-        {
-            return 3;
-        }
-        else if (movementSpeed <= 1.51)
-        {
-            return 4;
-        }
-        else
-        {
-            return 5;
-        }
+        return Mathf.RoundToInt(movementSpeed * 5);
     }
 
     public void ChangeChildrenText(Monster myMonster)
@@ -79,23 +59,10 @@ public class MonsterDisplayHandler : MonoBehaviour
         }
     }
 
-    public void UpdateHealth(Monster myMonster)
-    {
-        if (focusedMonster != null && myMonster == focusedMonster)
-        {
-            healthBar.fillAmount = myMonster.currentHealth / myMonster.health;
-            if (healthBar.fillAmount <= 0)
-            {
-                HideMonsterDisplay();
-            }
-        }
-    }
-
     public void ShowMonsterDisplay(Monster monster)
     {
         monsterFeedImage.sprite = GetMonsterIcon(monster.name);
         ChangeChildrenText(monster);
-        UpdateHealth(monster);
         moneyHandler.UpdateMoney();
         moneyHandler.MoveTransform(true);
 

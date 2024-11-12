@@ -10,13 +10,22 @@ public abstract class BaseTower : MonoBehaviour
     public float attackRange = 15f;
     public float attackRate = 1f;
     public int splashRadius = 0;
+    public float attackDamage = 10f;
+    
+    [Header("References")]
+    public MonsterDisplayHandler monsterDisplayHandler;
+    protected float lastAttackTime;
+    protected bool canAttack = true;
 
-    [Header("Health Bar")]
-    public GameObject healthBarPrefab;
-    private HealthBar healthBar;    
+    [Header("UI Elements")]
+    public GameObject healthBarPrefab; // Assign this in the inspector
+    private Transform healthBarTransform;
+    private Camera mainCamera;
+    private HealthBar healthBar;   
 
     protected virtual void Start()
     {
+        mainCamera = Camera.main;
         InitializeHealthBar();
     }
 
@@ -24,15 +33,47 @@ public abstract class BaseTower : MonoBehaviour
     {
         if (healthBarPrefab != null)
         {
-            GameObject healthBarInstance = Instantiate(healthBarPrefab, transform.position + Vector3.up * 2, Quaternion.identity, transform);
+            GameObject healthBarInstance = Instantiate(healthBarPrefab, transform.position, Quaternion.identity);
+            healthBarInstance.transform.SetParent(transform);
+            healthBarTransform = healthBarInstance.transform;
             healthBar = healthBarInstance.GetComponent<HealthBar>();
+            
+            // Set initial health
             healthBar.SetMaxHealth(maxHealth);
+            healthBar.SetHealth(health);
+            healthBar.SetType("Tower");
         } else {
             Debug.LogError("Health bar prefab is not assigned");
         }
     }
 
-    protected abstract void Attack();
+    private void Update()
+    {
+        // Update health bar position and rotation
+        if (healthBarTransform != null)
+        {
+            healthBarTransform.position = transform.position + Vector3.up * 2f;
+            healthBarTransform.rotation = mainCamera.transform.rotation;
+        }
+
+        if (canAttack && Time.time >= lastAttackTime + attackRate)
+        {
+            Attack();
+            lastAttackTime = Time.time;
+        }
+    }
+
+    protected virtual void Attack()
+    {
+        // Base implementation for finding targets
+        Transform target = FindTarget();
+        if (target != null)
+        {
+            PerformAttack(target);
+        }
+    }
+
+    protected abstract void PerformAttack(Transform target);
 
     // Method to take damage
     public void TakeDamage(int damage)
@@ -50,11 +91,6 @@ public abstract class BaseTower : MonoBehaviour
     {
         // Handle tower destruction effects here (e.g., play animation, notify manager)
         Destroy(gameObject);
-    }
-
-    private void Update()
-    {
-        Attack();
     }
 
     public Transform FindTarget()

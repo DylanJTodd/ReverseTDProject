@@ -311,7 +311,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: f0bec83a08374c44a8e1918cd3106c67, type: 2}
     - target: {fileID: 919132149155446097, guid: 51b3d374be2cf794ab0a78e6d63889cb, type: 3}
       propertyPath: m_Name
-      value: EarthTower 1
+      value: EarthTower
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -325,7 +325,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 51b3d374be2cf794ab0a78e6d63889cb, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3502388334309241688}
+      addedObject: {fileID: 5998911745647472881}
   m_SourcePrefab: {fileID: 100100000, guid: 51b3d374be2cf794ab0a78e6d63889cb, type: 3}
 --- !u!4 &6340399486670393705 stripped
 Transform:
@@ -337,7 +337,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 51b3d374be2cf794ab0a78e6d63889cb, type: 3}
   m_PrefabInstance: {fileID: 5798145655628347010}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3502388334309241688
+--- !u!114 &5998911745647472881
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -346,15 +346,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 6680614032149220307}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c501fcb3da6f92469b9617ab8be08b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 8e4048f39c68a104ebd792195137bc38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackVFX: {fileID: 6838217607030755782}
-  attackDamage: 250
-  attackCooldown: 5
-  towerRadius: 5
-  aoeRadius: 2
+  health: 100
+  maxHealth: 100
+  maxRange: 10
+  attackRange: 15
+  attackRate: 1
+  splashRadius: 0
+  attackDamage: 10
   monsterDisplayHandler: {fileID: 0}
+  healthBarPrefab: {fileID: 0}
+  attackVFX: {fileID: 0}
+  aoeRadius: 2
 --- !u!1001 &6640156614123021234
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -703,10 +708,5 @@ PrefabInstance:
 --- !u!4 &6644980362347214352 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4825948614923682, guid: 32c9fd11a72259d45aa26ae41c34c5aa, type: 3}
-  m_PrefabInstance: {fileID: 6640156614123021234}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &6838217607030755782 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 198345217066185332, guid: 32c9fd11a72259d45aa26ae41c34c5aa, type: 3}
   m_PrefabInstance: {fileID: 6640156614123021234}
   m_PrefabAsset: {fileID: 0}

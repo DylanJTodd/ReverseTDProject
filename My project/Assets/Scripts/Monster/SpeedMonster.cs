@@ -18,23 +18,5 @@ public class SpeedMonster : Monster
         // This could be a quick multi-hit attack
     }
 
-    public override void Upgrade(int tier)
-    {
-        switch(tier)
-        {
-            case 1:
-                movementSpeed *= 1.2f;
-                damage = (int)(damage * 1.1f);
-                break;
-            case 2:
-                movementSpeed *= 1.5f;
-                damage = (int)(damage * 1.3f);
-                break;
-            case 3:
-                movementSpeed *= 2f;
-                damage = (int)(damage * 1.5f);
-                break;
-        }
-    }
 }
 

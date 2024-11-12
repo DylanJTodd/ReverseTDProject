@@ -47,5 +47,8 @@ public class MonsterManager : MonoBehaviour
         return monsters.FirstOrDefault(monster => monster.name == name)?.gameObject;
     }
 
-    // Additional management methods can be added here
+    public List<Monster> GetMonsters()
+    {
+        return monsters;
+    }
 }

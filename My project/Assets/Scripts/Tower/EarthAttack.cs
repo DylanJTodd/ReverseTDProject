@@ -106,7 +106,6 @@ public class EarthAttack : MonoBehaviour
                 if (monster != null && !monster.CantTarget())
                 {
                     monster.AdjustHealth(-attackDamage);
-                    monsterDisplayHandler.UpdateHealth(monster);
                 }
             }
         }

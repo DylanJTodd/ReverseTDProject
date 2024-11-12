@@ -5,9 +5,26 @@ public class IceTower : BaseTower
 {
     [Header("Ice Tower Settings")]
     public GameObject iceChunkPrefab;
-    public new float attackRange = 15f;
-    public new float attackRate = 1f;
-    private float lastAttackTime;
+    public GameObject splashEffectPrefab;
+    public float projectileSpeed = 10f;
+
+    protected override void PerformAttack(Transform target)
+    {
+        if (target != null)
+        {
+            SpawnIceChunk(target);
+        }
+    }
+
+    private void SpawnIceChunk(Transform target)
+    {
+        GameObject iceChunk = Instantiate(iceChunkPrefab, transform.position, Quaternion.identity);
+        IceChunk iceChunkScript = iceChunk.GetComponent<IceChunk>();
+        if (iceChunkScript != null)
+        {
+            iceChunkScript.ThrowTowards(target);
+        }
+    }
 
     protected override void Start()
     {
@@ -31,7 +48,7 @@ public class IceTower : BaseTower
             if (target != null)
             {
                 // Spawn ice chunk and throw towards the target
-                SpawnIceChunk(target);
+                SpawnIceChunk(target.transform);
                 lastAttackTime = Time.time;
             }
         }
@@ -51,17 +68,6 @@ public class IceTower : BaseTower
             }
         }
         return nearest;
-    }
-
-    private void SpawnIceChunk(Monster target)
-    {
-        // Instantiate ice chunk at tower's position
-        GameObject iceChunk = Instantiate(iceChunkPrefab, transform.position, Quaternion.identity);
-        IceChunk iceChunkScript = iceChunk.GetComponent<IceChunk>();
-        if (iceChunkScript != null)
-        {
-            iceChunkScript.ThrowTowards(target.transform);
-        }
     }
 
     private void OnDestroy()

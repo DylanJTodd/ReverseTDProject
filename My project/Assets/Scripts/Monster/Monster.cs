@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public abstract class Monster : MonoBehaviour
 {
@@ -16,6 +17,12 @@ public abstract class Monster : MonoBehaviour
     public float attackRange = 1;
     public float attackSpeed = 1;
 
+    [Header("UI Elements")]
+    public GameObject healthBarPrefab; // Assign this in the inspector
+    private Transform healthBarTransform;
+    private Camera mainCamera;
+    private HealthBar healthBar;
+
     private float maxSpeed;
     private Coroutine latestSlowCoroutine;
     private Coroutine latestDOTCoroutine;
@@ -25,6 +32,22 @@ public abstract class Monster : MonoBehaviour
     protected virtual void Awake()
     {
         maxSpeed = movementSpeed;
+        mainCamera = Camera.main;
+        
+        // Create health bar
+        if (healthBarPrefab != null)
+        {
+            GameObject healthBarObj = Instantiate(healthBarPrefab, transform.position, Quaternion.identity);
+            healthBarObj.GetComponent<HealthBar>().SetType("monster");
+            healthBarObj.transform.SetParent(transform);
+            healthBarTransform = healthBarObj.transform;
+            healthBar = healthBarObj.GetComponent<HealthBar>();
+            
+            // Set initial health
+            healthBar.SetMaxHealth(maxHealth);
+            healthBar.SetHealth(health);
+            healthBar.SetType("Monster");
+        }
     }
 
     private void Start()
@@ -32,12 +55,25 @@ public abstract class Monster : MonoBehaviour
         MonsterManager.instance.RegisterMonster(this);
     }
 
-    public abstract void Attack();
-    public abstract void Upgrade(int tier);
+    private void Update()
+    {
+        if (healthBarTransform != null)
+        {
+            // Make health bar face camera and position it above monster
+            healthBarTransform.position = transform.position + Vector3.up * 2f;
+            healthBarTransform.rotation = mainCamera.transform.rotation;
+        }
+    }
 
+    public abstract void Attack();
     public void TakeDamage(int damageAmount)
     {
         health -= damageAmount;
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(health);
+        }
+        
         if (health <= 0)
         {
             Die();
@@ -47,6 +83,11 @@ public abstract class Monster : MonoBehaviour
     public void AdjustHealth(float amount)
     {
         health += (int)amount;
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(health);
+        }
+        
         if (health <= 0)
         {
             Die();
@@ -112,4 +153,82 @@ public abstract class Monster : MonoBehaviour
     public int GetHealth() => health;
     public int GetMaxHealth() => maxHealth;
     public bool CantTarget() => cantTarget;
+
+    // Add these upgrade methods after the existing properties
+    public void UpgradeStrength(int tier)
+    {
+        switch (tier)
+        {
+            case 1:
+                damage = (int)(damage * 1.2f);
+                break;
+            case 2:
+                damage = (int)(damage * 1.5f);
+                break;
+            case 3:
+                damage = (int)(damage * 2f);
+                break;
+        }
+    }
+
+    public void UpgradeSpeed(int tier)
+    {
+        switch (tier)
+        {
+            case 1:
+                movementSpeed *= 1.2f;
+                maxSpeed *= 1.2f;
+                break;
+            case 2:
+                movementSpeed *= 1.5f;
+                maxSpeed *= 1.5f;
+                break;
+            case 3:
+                movementSpeed *= 2f;
+                maxSpeed *= 2f;
+                break;
+        }
+    }
+
+    public void UpgradeHealth(int tier)
+    {
+        float multiplier = 1f;
+        switch (tier)
+        {
+            case 1:
+                multiplier = 1.2f;
+                break;
+            case 2:
+                multiplier = 1.5f;
+                break;
+            case 3:
+                multiplier = 2f;
+                break;
+        }
+        
+        maxHealth = (int)(maxHealth * multiplier);
+        health = (int)(health * multiplier);
+        if (healthBar != null)
+        {
+            healthBar.SetMaxHealth(maxHealth);
+            healthBar.SetHealth(health);
+        }
+    }
+
+    // Modify the existing abstract Upgrade method to handle different upgrade types
+    public void Upgrade(string type, int tier)
+    {
+        switch (type.ToLower())
+        {
+            case "strength":
+                UpgradeStrength(tier);
+                break;
+            case "speed":
+                UpgradeSpeed(tier);
+                break;
+            case "health":
+                UpgradeHealth(tier);
+                break;
+        }
+    }
 }

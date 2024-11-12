@@ -345,18 +345,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 6842461563814488569}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac947754bf203d74da1543d27d6676e9, type: 3}
+  m_Script: {fileID: 11500000, guid: 366ec260413905d43b686050aefd9499, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackVFX: {fileID: 3821957744458368610, guid: af4eb368c55040f46a1b4a1fbaeb8e21, type: 3}
+  health: 100
+  maxHealth: 100
+  maxRange: 10
+  attackRange: 15
+  attackRate: 1
+  splashRadius: 10
+  attackDamage: 10
   monsterDisplayHandler: {fileID: 0}
-  towerRadius: 4
-  attackCooldown1: 0.5
-  attackCooldown2: 0.5
-  attackSpeed: 50
-  slowPercent: 50
-  slowTime: 2
-  attackDamage: 20
+  healthBarPrefab: {fileID: 0}
+  iceChunkPrefab: {fileID: 0}
+  splashEffectPrefab: {fileID: 0}
+  projectileSpeed: 10
 --- !u!1001 &6811359547020364609
 PrefabInstance:
   m_ObjectHideFlags: 0

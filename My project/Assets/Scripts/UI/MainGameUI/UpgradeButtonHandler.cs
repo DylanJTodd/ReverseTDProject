@@ -116,25 +116,9 @@ public class UpgradeButtonHandler : MonoBehaviour
     private void ApplyUpgradeToAllMonsters(string upgradeType, int tier)
     {
         // Loop through all the monsters in the monsterHolder and apply the relevant upgrade
-        foreach (Transform monsterTransform in monsterHolder.transform)
+        foreach (Monster monster in MonsterManager.instance.GetMonsters())
         {
-            Monster monster = monsterTransform.GetComponent<Monster>();
-
-            if (monster != null)
-            {
-                switch (upgradeType)
-                {
-                    case "strength":
-                        monster.UpgradeTierStrength(tier);
-                        break;
-                    case "speed":
-                        monster.UpgradeTierSpeed(tier);
-                        break;
-                    case "health":
-                        monster.UpgradeTierHealth(tier);
-                        break;
-                }
-            }
+            monster.Upgrade(upgradeType, tier);
         }
     }
 
