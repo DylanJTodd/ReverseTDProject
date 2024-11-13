@@ -14,6 +14,9 @@ public class Monsteraa : MonoBehaviour
     public float currentHealth;
     public bool cantTarget;
 
+    public AudioClip movementSound;
+    //public AudioClip damageSound;
+
     public UpgradeButtonHandler upgradeButtonHandler;
 
 
@@ -58,18 +61,18 @@ public class Monsteraa : MonoBehaviour
     {
         if (tier == 1)
         {
-            movementSpeed = movementSpeed * 1.2f;
-            maxSpeed = maxSpeed * 1.2f;
+            movementSpeed = movementSpeed * 1.1f;
+            maxSpeed = maxSpeed * 1.1f;
         }
         if (tier == 2)
         {
-            movementSpeed = movementSpeed * 1.5f;
-            maxSpeed = maxSpeed * 1.5f;
+            movementSpeed = movementSpeed * 1.25f;
+            maxSpeed = maxSpeed * 1.25f;
         }
         if (tier == 3)
         {
-            movementSpeed = movementSpeed * 2f;
-            maxSpeed = maxSpeed * 2f;
+            movementSpeed = movementSpeed * 1.5f;
+            maxSpeed = maxSpeed * 1.5f;
         }
         return;
     }

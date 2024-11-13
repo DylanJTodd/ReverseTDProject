@@ -74,7 +74,7 @@ public class IntroButtonHandler : MonoBehaviour
         }
 
         // Now load the next scene
-        SceneManager.LoadScene("Level 1");
+        SceneManager.LoadScene("LevelSelect");
     }
 
     private void OnSettingsButtonClick()

@@ -89,28 +89,6 @@ public class UpgradeButtonHandler : MonoBehaviour
                 healthUpgrade.interactable = false;
             }
         }
-
-        else
-        {
-            if (healthUpgrades == 3)
-            {
-                return;
-            }
-
-            bool money = BuyUpgrade(healthUpgrades, healthProgress);
-            if (money)
-            {
-                healthUpgrades += 1;
-            }
-
-            //Add functionality for adding this to all monsters
-
-            if (healthUpgrades == 3)
-            {
-                pricePanel.alpha = 0;
-                healthUpgrade.interactable = false;
-            }
-        }
     }
 
     private void ApplyUpgradeToAllMonsters(string upgradeType, int tier)
