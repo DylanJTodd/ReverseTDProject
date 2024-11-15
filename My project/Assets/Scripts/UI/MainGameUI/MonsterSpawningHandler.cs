@@ -202,13 +202,12 @@ public class MonsterSpawningHandler : MonoBehaviour
 
         if (unlockedMonsters[monsterName])
         {
-            GameObject monsterObject = monsterManager.GetMonsterByName(monsterName);
-            Monster monster = monsterObject.GetComponent<Monster>();
-
+            int cost = GetMonsterCost(monsterName);
+            
             GameObject costDisplay = Instantiate(costDisplayPrefab, button.transform.Find("Image"));
             costDisplay.name = "CostDisplay";
             TextMeshProUGUI costText = costDisplay.GetComponentInChildren<TextMeshProUGUI>();
-            costText.text = $"{monster.cost}";
+            costText.text = $"{cost}";
 
             CanvasGroup cg = costDisplay.GetComponent<CanvasGroup>();
             if (cg != null)
@@ -257,9 +256,8 @@ public class MonsterSpawningHandler : MonoBehaviour
     void OnMonsterButtonClick(string monsterType, int tier, Button button, bool isRow2)
     {
         string monsterName = $"{monsterType}Monster{tier}";
-        GameObject monsterObject = monsterManager.GetMonsterByName(monsterName);
-        Monster monster = monsterObject.GetComponent<Monster>();
-
+        Debug.Log($"Button clicked for monster: {monsterName}");
+        
         if (!unlockedMonsters[monsterName])
         {
             if (buttonCostDisplayed[button])
@@ -285,6 +283,8 @@ public class MonsterSpawningHandler : MonoBehaviour
             if (Time.time - lastSummonTime < summonCooldown) return;
             lastSummonTime = Time.time;
 
+            int cost = GetMonsterCost(monsterName);
+            
             if (isRow2)
             {
                 string storedMonsterType = monsterType;
@@ -293,24 +293,25 @@ public class MonsterSpawningHandler : MonoBehaviour
                 ChangeTier(-1);
 
                 Button correspondingButton = FindButtonByMonsterType(row1Buttons, storedMonsterType, storedTier);
-                if (correspondingButton != null)
+                if (correspondingButton != null && moneyHandler.GetMoney() >= cost)
                 {
-                    moneyHandler.RemoveMoney(monster.cost);
+                    moneyHandler.RemoveMoney(cost);
                     spawningMonster.SpawnMonster(monsterName);
                     ApplyCooldown(correspondingButton);
                 }
             }
             else
             {
-                if (moneyHandler.GetMoney() >= monster.cost)
+                if (moneyHandler.GetMoney() >= cost)
                 {
-                    moneyHandler.RemoveMoney(monster.cost);
+                    moneyHandler.RemoveMoney(cost);
                     spawningMonster.SpawnMonster(monsterName);
                     ApplyCooldown(button);
                 }
             }
         }
     }
+
 
     void ApplyCooldown(Button button)
     {
@@ -459,5 +460,19 @@ public class MonsterSpawningHandler : MonoBehaviour
             case 3: return 1500;
             default: return 0;
         }
+    }
+
+    private int GetMonsterCost(string monsterName)
+    {
+        if (monsterName.Contains("Strength"))
+            return 20;
+        if (monsterName.Contains("Speed"))
+            return 18;
+        if (monsterName.Contains("Health"))
+            return 15;
+        if (monsterName.Contains("Invisible"))
+            return 20;
+
+        return 10;
     }
 }

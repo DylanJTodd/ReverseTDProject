@@ -250,13 +250,10 @@ public class LightningTower : BaseTower
 
     void DealDamage(Monster monster, int chainLevel)
     {
-        float damage = baseDamage * Mathf.Pow(0.9f, chainLevel - 1);
+        float damage = attackDamage * Mathf.Pow(0.9f, chainLevel - 1);
 
         if (monster == null || monster.gameObject == null || monster.GetHealth() <= 0) return;
-
-        if (monster == null || monster.gameObject == null) return;
-
-        float damage = attackDamage * Mathf.Pow(0.9f, chainLevel - 1);
+        
         monster.AdjustHealth(-damage);
     }
 }

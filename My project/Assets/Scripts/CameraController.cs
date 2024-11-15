@@ -24,7 +24,7 @@ public class CameraController : MonoBehaviour
 
     [Header("Monster Display")]
     public MonsterDisplayHandler monsterDisplayHandler;
-
+    private Vector3 defaultPosition;
     private Vector3 newPosition;
     private Quaternion newRotation;
     private Vector3 newZoom;
@@ -46,6 +46,7 @@ public class CameraController : MonoBehaviour
         // Set an initial zoom level that's more zoomed out
         currentZoomMagnitude = (minZoom + maxZoom) / 2f;
         newZoom = newZoom.normalized * currentZoomMagnitude;
+        defaultPosition = newPosition;
     }
 
     void LateUpdate()
@@ -218,5 +219,10 @@ public class CameraController : MonoBehaviour
     {
         followTransform = monsterTransform;
         monsterDisplayHandler.ShowMonsterDisplay(monsterTransform.GetComponent<Monster>());
+    }
+
+    public void ResetCameraPosition()
+    {
+        newPosition = defaultPosition;
     }
 }

@@ -23,7 +23,7 @@ public abstract class Monster : MonoBehaviour
     private Camera mainCamera;
     private HealthBar healthBar;
 
-    private float maxSpeed;
+    public float maxSpeed;
     private Coroutine latestSlowCoroutine;
     private Coroutine latestDOTCoroutine;
     private float slowEndTime = 0f;
@@ -31,33 +31,71 @@ public abstract class Monster : MonoBehaviour
 
     protected virtual void Awake()
     {
+        Debug.Log($"Monster Awake: {gameObject.name}");
         maxSpeed = movementSpeed;
         mainCamera = Camera.main;
         
-        // Create health bar
+        // Try to find the health bar prefab if not assigned
+        if (healthBarPrefab == null)
+        {
+            healthBarPrefab = Resources.Load<GameObject>("Monsters/HealthBar");
+            if (healthBarPrefab == null)
+            {
+                Debug.LogWarning("Health bar prefab not found in Resources folder");
+            }
+        }
+
+        InitializeHealthBar();
+    }
+
+    private void InitializeHealthBar()
+    {
         if (healthBarPrefab != null)
         {
             GameObject healthBarObj = Instantiate(healthBarPrefab, transform.position, Quaternion.identity);
-            healthBarObj.GetComponent<HealthBar>().SetType("monster");
-            healthBarObj.transform.SetParent(transform);
-            healthBarTransform = healthBarObj.transform;
-            healthBar = healthBarObj.GetComponent<HealthBar>();
-            
-            // Set initial health
-            healthBar.SetMaxHealth(maxHealth);
-            healthBar.SetHealth(health);
-            healthBar.SetType("Monster");
+            if (healthBarObj != null)
+            {
+                HealthBar healthBarComponent = healthBarObj.GetComponent<HealthBar>();
+                if (healthBarComponent != null)
+                {
+                    healthBarComponent.SetType("monster");
+                    healthBarObj.transform.SetParent(transform);
+                    healthBarTransform = healthBarObj.transform;
+                    healthBar = healthBarComponent;
+                    
+                    // Set initial health
+                    healthBar.SetMaxHealth(maxHealth);
+                    healthBar.SetHealth(health);
+                    healthBar.SetType("Monster");
+                }
+                else
+                {
+                    Debug.LogError("HealthBar component not found on prefab");
+                }
+            }
+            else
+            {
+                Debug.LogError("Failed to instantiate health bar");
+            }
         }
     }
 
-    private void Start()
+    public virtual void Start()
     {
-        MonsterManager.instance.RegisterMonster(this);
+        Debug.Log($"Monster Start: {gameObject.name} - Health: {health}, Speed: {movementSpeed}");
+        if (MonsterManager.instance != null)
+        {
+            MonsterManager.instance.RegisterMonster(this);
+        }
+        else
+        {
+            Debug.LogError("MonsterManager instance is null!");
+        }
     }
 
     private void Update()
     {
-        if (healthBarTransform != null)
+        if (healthBarTransform != null && mainCamera != null)
         {
             // Make health bar face camera and position it above monster
             healthBarTransform.position = transform.position + Vector3.up * 2f;
@@ -155,57 +193,27 @@ public abstract class Monster : MonoBehaviour
     public bool CantTarget() => cantTarget;
 
     // Add these upgrade methods after the existing properties
+
+
+    public abstract void Upgrade(int tier);
+
     public void UpgradeStrength(int tier)
     {
-        switch (tier)
-        {
-            case 1:
-                damage = (int)(damage * 1.2f);
-                break;
-            case 2:
-                damage = (int)(damage * 1.5f);
-                break;
-            case 3:
-                damage = (int)(damage * 2f);
-                break;
-        }
+        damage = (int)(damage * (1 + (0.5f * tier)));
+        Debug.Log($"Upgraded {gameObject.name} strength to tier {tier}. New damage: {damage}");
     }
 
     public void UpgradeSpeed(int tier)
     {
-        switch (tier)
-        {
-            case 1:
-                movementSpeed *= 1.2f;
-                maxSpeed *= 1.2f;
-                break;
-            case 2:
-                movementSpeed *= 1.5f;
-                maxSpeed *= 1.5f;
-                break;
-            case 3:
-                movementSpeed *= 2f;
-                maxSpeed *= 2f;
-                break;
-        }
+        float multiplier = 1 + (0.25f * tier);
+        movementSpeed *= multiplier;
+        maxSpeed *= multiplier;
+        Debug.Log($"Upgraded {gameObject.name} speed to tier {tier}. New speed: {movementSpeed}");
     }
 
     public void UpgradeHealth(int tier)
     {
-        float multiplier = 1f;
-        switch (tier)
-        {
-            case 1:
-                multiplier = 1.2f;
-                break;
-            case 2:
-                multiplier = 1.5f;
-                break;
-            case 3:
-                multiplier = 2f;
-                break;
-        }
-        
+        float multiplier = 1 + (0.5f * tier);
         maxHealth = (int)(maxHealth * multiplier);
         health = (int)(health * multiplier);
         if (healthBar != null)
@@ -213,22 +221,6 @@ public abstract class Monster : MonoBehaviour
             healthBar.SetMaxHealth(maxHealth);
             healthBar.SetHealth(health);
         }
-    }
-
-    // Modify the existing abstract Upgrade method to handle different upgrade types
-    public void Upgrade(string type, int tier)
-    {
-        switch (type.ToLower())
-        {
-            case "strength":
-                UpgradeStrength(tier);
-                break;
-            case "speed":
-                UpgradeSpeed(tier);
-                break;
-            case "health":
-                UpgradeHealth(tier);
-                break;
-        }
+        Debug.Log($"Upgraded {gameObject.name} health to tier {tier}. New health: {health}");
     }
 }

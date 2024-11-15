@@ -96,7 +96,7 @@ public class UpgradeButtonHandler : MonoBehaviour
         // Loop through all the monsters in the monsterHolder and apply the relevant upgrade
         foreach (Monster monster in MonsterManager.instance.GetMonsters())
         {
-            monster.Upgrade(upgradeType, tier);
+            monster.Upgrade(tier);
         }
     }
 

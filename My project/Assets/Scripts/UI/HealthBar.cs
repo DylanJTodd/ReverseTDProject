@@ -34,7 +34,20 @@ public class HealthBar : MonoBehaviour
 
     private void Awake()
     {
-        fillImage = slider.fillRect.GetComponent<Image>();
+        // Add null check and get component if needed
+        if (slider == null)
+        {
+            slider = GetComponent<Slider>();
+        }
+        
+        if (slider != null)
+        {
+            fillImage = slider.fillRect.GetComponent<Image>();
+        }
+        else
+        {
+            Debug.LogError("No Slider component found on HealthBar!");
+        }
     }
 
     private void Update()

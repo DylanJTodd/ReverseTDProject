@@ -1,28 +1,25 @@
 using UnityEngine;
 
-public class HealthMonster : Monster
-{
+public class EthernalMonster : Monster
+{    
     public override void Start()
     {
-        // Initialize base stats
-        health = 150;
-        maxHealth = 150;
-        damage = 8;
-        movementSpeed = 0.8f;
-        cost = 15;
+        health = 100;
+        maxHealth = 100;
+        damage = 10;
+        movementSpeed = 0.5f;
+        cost = 20;
         base.Start();
     }
-
     public override void Attack()
     {
         // Health monster's attack implementation
         // This could be a basic attack or a special health-drain attack
     }
 
-    public override void Upgrade(int tier) 
+    public override void Upgrade(int tier)
     {
         health += health * tier;
         maxHealth += maxHealth * tier;
     }
 }
-
