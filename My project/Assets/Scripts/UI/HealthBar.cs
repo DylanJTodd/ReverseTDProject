@@ -10,7 +10,7 @@ public class HealthBar : MonoBehaviour
 
     public void SetType(string type)
     {
-        if (type == "castle")
+        if (type == "tower")
         {
             lowHealthColor = Color.red;
             highHealthColor = Color.green;
@@ -43,6 +43,7 @@ public class HealthBar : MonoBehaviour
         if (slider != null)
         {
             fillImage = slider.fillRect.GetComponent<Image>();
+            slider.value = slider.maxValue;
         }
         else
         {

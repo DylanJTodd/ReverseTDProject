@@ -1,14 +1,10 @@
 using UnityEngine;
+using System;
 
 public class EthernalMonster : Monster
 {    
     public override void Start()
     {
-        health = 100;
-        maxHealth = 100;
-        damage = 10;
-        movementSpeed = 0.5f;
-        cost = 20;
         base.Start();
     }
     public override void Attack()
@@ -19,7 +15,12 @@ public class EthernalMonster : Monster
 
     public override void Upgrade(int tier)
     {
-        health += health * tier;
-        maxHealth += maxHealth * tier;
+        // Replace current monster with higher tier ethernal monster prefab
+        MonsterManager.instance.ReplaceMonster(gameObject, MonsterType.Ethernal, tier);
+    }
+
+    public override MonsterType GetMonsterType()
+    {
+        return MonsterType.Ethernal;
     }
 }

@@ -1,15 +1,9 @@
 using UnityEngine;
-
+using System;
 public class HealthMonster : Monster
 {
     public override void Start()
     {
-        // Initialize base stats
-        health = 150;
-        maxHealth = 150;
-        damage = 8;
-        movementSpeed = 0.8f;
-        cost = 15;
         base.Start();
     }
 
@@ -19,10 +13,15 @@ public class HealthMonster : Monster
         // This could be a basic attack or a special health-drain attack
     }
 
-    public override void Upgrade(int tier) 
+    public override void Upgrade(int tier)
     {
-        health += health * tier;
-        maxHealth += maxHealth * tier;
+        // Replace current monster with higher tier health monster prefab
+        MonsterManager.instance.ReplaceMonster(gameObject, MonsterType.Health, tier);
+    }
+
+    public override MonsterType GetMonsterType()
+    {
+        return MonsterType.Health;
     }
 }
 

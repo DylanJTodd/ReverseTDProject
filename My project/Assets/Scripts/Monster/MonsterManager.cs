@@ -158,4 +158,55 @@ public class MonsterManager : MonoBehaviour
     {
         return monsters;
     }
+
+    public void ReplaceMonster(GameObject currentMonster, MonsterType type, int tier)
+    {
+        if (tier < 1 || tier > 3)
+        {
+            Debug.LogError($"Invalid tier: {tier}. Tier must be between 1 and 3.");
+            return;
+        }
+
+        // Store the current position and rotation
+        Vector3 position = currentMonster.transform.position;
+        Quaternion rotation = currentMonster.transform.rotation;
+
+        // Get movement component data before destroying
+        MonsterMovement oldMovement = currentMonster.GetComponent<MonsterMovement>();
+        if (oldMovement == null)
+        {
+            Debug.LogError("No MonsterMovement component found on current monster");
+            return;
+        }
+
+        // Get the appropriate prefab name based on type and tier
+        string newMonsterName = $"{type}Monster{tier}";
+        if (type == MonsterType.Ethernal)
+        {
+            newMonsterName = $"InvisibleMonster{tier}";
+        }
+
+        // Create the new monster
+        GameObject newMonster = CreateNewMonster(newMonsterName);
+        if (newMonster != null)
+        {
+            // Set the position and rotation
+            newMonster.transform.position = position;
+            newMonster.transform.rotation = rotation;
+
+            // Add and initialize movement component
+            MonsterMovement newMovement = newMonster.AddComponent<MonsterMovement>();
+            newMovement.Initialize(0, newMonster, oldMovement.endPathNumber);
+            newMovement.castleHealth = oldMovement.castleHealth;
+
+            // Unregister and destroy old monster
+            Monster oldMonsterComponent = currentMonster.GetComponent<Monster>();
+            UnregisterMonster(oldMonsterComponent);
+            DestroyImmediate(currentMonster);
+        }
+        else
+        {
+            Debug.LogError($"Failed to create new monster of type {type} and tier {tier}");
+        }
+    }
 }

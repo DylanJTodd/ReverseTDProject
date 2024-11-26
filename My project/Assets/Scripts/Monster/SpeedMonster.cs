@@ -1,15 +1,10 @@
 using UnityEngine;
+using System;
 
 public class SpeedMonster : Monster
 {
     public override void Start()
     {
-        // Initialize base stats
-        health = 80;
-        maxHealth = 80;
-        damage = 12;
-        movementSpeed = 1.3f;
-        cost = 18;
         base.Start();
     }
 
@@ -21,9 +16,13 @@ public class SpeedMonster : Monster
 
     public override void Upgrade(int tier)
     {
-        movementSpeed += movementSpeed * tier;
-        maxSpeed += maxSpeed * tier;
+        // Replace current monster with higher tier speed monster prefab
+        MonsterManager.instance.ReplaceMonster(gameObject, MonsterType.Speed, tier);
     }
 
+    public override MonsterType GetMonsterType()
+    {
+        return MonsterType.Speed;
+    }
 }
 

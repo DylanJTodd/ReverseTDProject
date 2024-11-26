@@ -1,15 +1,10 @@
 using UnityEngine;
+using System;
 
 public class StrengthMonster : Monster
 {
     public override void Start()
     {
-        // Initialize base stats
-        health = 100;
-        maxHealth = 100;
-        damage = 15;
-        movementSpeed = 0.9f;
-        cost = 20;
         base.Start();
     }
 
@@ -21,7 +16,13 @@ public class StrengthMonster : Monster
 
     public override void Upgrade(int tier)
     {
-        damage += damage * tier;
+        // Replace current monster with higher tier strength monster prefab
+        MonsterManager.instance.ReplaceMonster(gameObject, MonsterType.Strength, tier);
+    }
+
+    public override MonsterType GetMonsterType()
+    {
+        return MonsterType.Strength;
     }
 }
 

@@ -31,6 +31,16 @@ public abstract class BaseTower : MonoBehaviour
 
     private void InitializeHealthBar()
     {
+        // Try to find the health bar prefab if not assigned
+        if (healthBarPrefab == null)
+        {
+            healthBarPrefab = Resources.Load<GameObject>("UI/HealthBar");
+            if (healthBarPrefab == null)
+            {
+                Debug.LogWarning("Health bar prefab not found in Resources folder");
+            }
+        }
+
         if (healthBarPrefab != null)
         {
             GameObject healthBarInstance = Instantiate(healthBarPrefab, transform.position, Quaternion.identity);

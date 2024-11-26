@@ -290,8 +290,6 @@ public class MonsterSpawningHandler : MonoBehaviour
                 string storedMonsterType = monsterType;
                 int storedTier = tier;
 
-                ChangeTier(-1);
-
                 Button correspondingButton = FindButtonByMonsterType(row1Buttons, storedMonsterType, storedTier);
                 if (correspondingButton != null && moneyHandler.GetMoney() >= cost)
                 {

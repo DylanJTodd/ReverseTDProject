@@ -26,7 +26,6 @@ public class SpawningMonster : MonoBehaviour
             Debug.LogError("Line start or end references are missing!");
             return;
         }
-
         GameObject monsterObject = monsterManager.CreateNewMonster(name);
         if (monsterObject == null)
         {

@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class UpgradeButtonHandler : MonoBehaviour
 {
@@ -46,7 +47,7 @@ public class UpgradeButtonHandler : MonoBehaviour
             if (money)
             {
                 strengthUpgrades += 1;
-                ApplyUpgradeToAllMonsters("strength", strengthUpgrades);
+                ApplyUpgradeToSpecificMonster(MonsterType.Strength, strengthUpgrades);
             }
 
             if (strengthUpgrades == 3)
@@ -63,7 +64,7 @@ public class UpgradeButtonHandler : MonoBehaviour
             if (money)
             {
                 speedUpgrades += 1;
-                ApplyUpgradeToAllMonsters("speed", speedUpgrades);
+                ApplyUpgradeToSpecificMonster(MonsterType.Speed, speedUpgrades);
             }
 
             if (speedUpgrades == 3)
@@ -80,7 +81,7 @@ public class UpgradeButtonHandler : MonoBehaviour
             if (money)
             {
                 healthUpgrades += 1;
-                ApplyUpgradeToAllMonsters("health", healthUpgrades);
+                ApplyUpgradeToSpecificMonster(MonsterType.Health, healthUpgrades);
             }
 
             if (healthUpgrades == 3)
@@ -91,15 +92,19 @@ public class UpgradeButtonHandler : MonoBehaviour
         }
     }
 
-    private void ApplyUpgradeToAllMonsters(string upgradeType, int tier)
+    private void ApplyUpgradeToSpecificMonster(MonsterType monsterType, int tier)
     {
-        // Loop through all the monsters in the monsterHolder and apply the relevant upgrade
-        foreach (Monster monster in MonsterManager.instance.GetMonsters())
+        // Create a copy of the monsters list and convert to array to avoid modification issues
+        Monster[] monstersCopy = MonsterManager.instance.GetMonsters().ToArray();
+        
+        foreach (Monster monster in monstersCopy)
         {
-            monster.Upgrade(tier);
+            if (monster != null && monster.gameObject != null && monster.GetMonsterType() == monsterType)
+            {
+                monster.Upgrade(tier);
+            }
         }
     }
-
     private void OpenUpgrades()
     {
         if (isOpened)
@@ -183,5 +188,10 @@ public class UpgradeButtonHandler : MonoBehaviour
             return 1500;
         }
         return -1;
+    }
+
+    public static int GetUpgradeTier(string monsterName)
+    {
+        return int.Parse(monsterName.Substring(monsterName.Length - 1));
     }
 }

@@ -12,6 +12,7 @@ public abstract class Monster : MonoBehaviour
     public int cost = 10;
     public float heightAdjust = 0;
     public float movementSpeed = 1;
+    public float maxSpeed;
     
     [Header("Combat Stats")]
     public float attackRange = 1;
@@ -23,7 +24,7 @@ public abstract class Monster : MonoBehaviour
     private Camera mainCamera;
     private HealthBar healthBar;
 
-    public float maxSpeed;
+
     private Coroutine latestSlowCoroutine;
     private Coroutine latestDOTCoroutine;
     private float slowEndTime = 0f;
@@ -34,15 +35,23 @@ public abstract class Monster : MonoBehaviour
         Debug.Log($"Monster Awake: {gameObject.name}");
         maxSpeed = movementSpeed;
         mainCamera = Camera.main;
-        
-        // Try to find the health bar prefab if not assigned
+        if (mainCamera == null)
+        {
+            Debug.LogError("Main camera not found!");
+        }
+
+        // Only try to load from Resources if not already assigned in inspector
         if (healthBarPrefab == null)
         {
-            healthBarPrefab = Resources.Load<GameObject>("Monsters/HealthBar");
+            healthBarPrefab = Resources.Load<GameObject>("UI/HealthBar");
             if (healthBarPrefab == null)
             {
                 Debug.LogWarning("Health bar prefab not found in Resources folder");
             }
+        }
+        else
+        {
+            Debug.Log($"Using pre-assigned healthbar prefab on {gameObject.name}");
         }
 
         InitializeHealthBar();
@@ -50,32 +59,44 @@ public abstract class Monster : MonoBehaviour
 
     private void InitializeHealthBar()
     {
-        if (healthBarPrefab != null)
+        Debug.Log("Initializing health bar");
+        if (healthBarPrefab != null && mainCamera != null)
         {
-            GameObject healthBarObj = Instantiate(healthBarPrefab, transform.position, Quaternion.identity);
+            // Create the health bar at the monster's position
+            GameObject healthBarObj = Instantiate(healthBarPrefab);
             if (healthBarObj != null)
             {
-                HealthBar healthBarComponent = healthBarObj.GetComponent<HealthBar>();
+                // Parent first, then position
+                healthBarObj.transform.SetParent(transform);
+                healthBarObj.transform.localPosition = Vector3.up * 2f;
+                
+                // Get and setup Canvas
+                Canvas canvas = healthBarObj.GetComponentInChildren<Canvas>();
+                if (canvas != null)
+                {
+                    canvas.renderMode = RenderMode.WorldSpace;
+                    canvas.worldCamera = mainCamera;
+                    canvas.sortingOrder = 100; // Make sure it renders on top
+                    
+                    // Reset the Canvas's transform
+                    canvas.transform.localPosition = Vector3.zero;
+                    canvas.transform.localRotation = Quaternion.identity;
+                    canvas.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+                    
+                    Debug.Log($"Canvas setup complete - Camera: {canvas.worldCamera}, RenderMode: {canvas.renderMode}");
+                }
+                
+                // Get and setup HealthBar component
+                HealthBar healthBarComponent = healthBarObj.GetComponentInChildren<HealthBar>();
                 if (healthBarComponent != null)
                 {
                     healthBarComponent.SetType("monster");
-                    healthBarObj.transform.SetParent(transform);
-                    healthBarTransform = healthBarObj.transform;
                     healthBar = healthBarComponent;
+                    healthBarTransform = healthBarObj.transform;
                     
-                    // Set initial health
                     healthBar.SetMaxHealth(maxHealth);
                     healthBar.SetHealth(health);
-                    healthBar.SetType("Monster");
                 }
-                else
-                {
-                    Debug.LogError("HealthBar component not found on prefab");
-                }
-            }
-            else
-            {
-                Debug.LogError("Failed to instantiate health bar");
             }
         }
     }
@@ -98,7 +119,8 @@ public abstract class Monster : MonoBehaviour
         if (healthBarTransform != null && mainCamera != null)
         {
             // Make health bar face camera and position it above monster
-            healthBarTransform.position = transform.position + Vector3.up * 2f;
+            Vector3 position = transform.position + Vector3.up * 2f;
+            healthBarTransform.position = position;
             healthBarTransform.rotation = mainCamera.transform.rotation;
         }
     }
@@ -191,36 +213,6 @@ public abstract class Monster : MonoBehaviour
     public int GetHealth() => health;
     public int GetMaxHealth() => maxHealth;
     public bool CantTarget() => cantTarget;
-
-    // Add these upgrade methods after the existing properties
-
-
     public abstract void Upgrade(int tier);
-
-    public void UpgradeStrength(int tier)
-    {
-        damage = (int)(damage * (1 + (0.5f * tier)));
-        Debug.Log($"Upgraded {gameObject.name} strength to tier {tier}. New damage: {damage}");
-    }
-
-    public void UpgradeSpeed(int tier)
-    {
-        float multiplier = 1 + (0.25f * tier);
-        movementSpeed *= multiplier;
-        maxSpeed *= multiplier;
-        Debug.Log($"Upgraded {gameObject.name} speed to tier {tier}. New speed: {movementSpeed}");
-    }
-
-    public void UpgradeHealth(int tier)
-    {
-        float multiplier = 1 + (0.5f * tier);
-        maxHealth = (int)(maxHealth * multiplier);
-        health = (int)(health * multiplier);
-        if (healthBar != null)
-        {
-            healthBar.SetMaxHealth(maxHealth);
-            healthBar.SetHealth(health);
-        }
-        Debug.Log($"Upgraded {gameObject.name} health to tier {tier}. New health: {health}");
-    }
+    public abstract MonsterType GetMonsterType();
 }

@@ -171,15 +171,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 4874941648038788483}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b06879e6ee494d648bc783b23e913b99, type: 3}
+  m_Script: {fileID: 11500000, guid: 718bae52c46931f49bee1707ba7979a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: InvisibleMonster1
-  obj: {fileID: 4874941648038788483}
-  cost: 30
-  health: 200
-  damage: 50
-  heightAdjust: 1
+  health: 100
+  maxHealth: 100
+  damage: 10
+  level: 1
+  cost: 10
+  heightAdjust: 0
   movementSpeed: 1
-  currentHealth: 200
-  cantTarget: 1
+  attackRange: 1
+  attackSpeed: 1
+  healthBarPrefab: {fileID: 0}
+  maxSpeed: 0

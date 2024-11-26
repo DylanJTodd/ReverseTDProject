@@ -5258,17 +5258,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1637584495559616}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b06879e6ee494d648bc783b23e913b99, type: 3}
+  m_Script: {fileID: 11500000, guid: a617efca52d814446860fb2899239fcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: SpeedMonster2
-  obj: {fileID: 1637584495559616}
-  cost: 75
-  health: 1000
-  damage: 250
+  health: 100
+  maxHealth: 100
+  damage: 10
+  level: 1
+  cost: 10
   heightAdjust: 0
-  movementSpeed: 1.8
-  currentHealth: 1000
+  movementSpeed: 1
+  attackRange: 1
+  attackSpeed: 1
+  healthBarPrefab: {fileID: 1533729058185714393, guid: 7c90982dd3d40b94e96deb5ed06bd406, type: 3}
+  maxSpeed: 0
 --- !u!1 &1645117210141060
 GameObject:
   m_ObjectHideFlags: 0

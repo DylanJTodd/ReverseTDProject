@@ -252,17 +252,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1000010402951368}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b06879e6ee494d648bc783b23e913b99, type: 3}
+  m_Script: {fileID: 11500000, guid: d37aced0ac1d6e542991dc7c2ef64a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: StrengthMonster2
-  obj: {fileID: 1000010402951368}
-  cost: 100
-  health: 3000
-  damage: 950
+  health: 100
+  maxHealth: 100
+  damage: 10
+  level: 1
+  cost: 10
   heightAdjust: 0
-  movementSpeed: 0.7
-  currentHealth: 3000
+  movementSpeed: 1
+  maxSpeed: 0
+  attackRange: 1
+  attackSpeed: 1
+  healthBarPrefab: {fileID: 1533729058185714393, guid: 7c90982dd3d40b94e96deb5ed06bd406, type: 3}
 --- !u!1 &1000010415932204
 GameObject:
   m_ObjectHideFlags: 0
