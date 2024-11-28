@@ -24,9 +24,9 @@ public class UpgradeButtonHandler : MonoBehaviour
 
     private bool isOpened = false;
 
-    public int strengthUpgrades = 0;
-    public int speedUpgrades = 0;
-    public int healthUpgrades = 0;
+    public int strengthUpgrades = 1;
+    public int speedUpgrades = 1;
+    public int healthUpgrades = 1;
 
     void Start()
     {
@@ -47,6 +47,7 @@ public class UpgradeButtonHandler : MonoBehaviour
             if (money)
             {
                 strengthUpgrades += 1;
+                FindObjectOfType<MonsterSpawningHandler>().strengthTier = strengthUpgrades;
                 ApplyUpgradeToSpecificMonster(MonsterType.Strength, strengthUpgrades);
             }
 
@@ -64,6 +65,7 @@ public class UpgradeButtonHandler : MonoBehaviour
             if (money)
             {
                 speedUpgrades += 1;
+                FindObjectOfType<MonsterSpawningHandler>().speedTier = speedUpgrades;
                 ApplyUpgradeToSpecificMonster(MonsterType.Speed, speedUpgrades);
             }
 
@@ -81,6 +83,7 @@ public class UpgradeButtonHandler : MonoBehaviour
             if (money)
             {
                 healthUpgrades += 1;
+                FindObjectOfType<MonsterSpawningHandler>().healthTier = healthUpgrades;
                 ApplyUpgradeToSpecificMonster(MonsterType.Health, healthUpgrades);
             }
 
@@ -90,6 +93,7 @@ public class UpgradeButtonHandler : MonoBehaviour
                 healthUpgrade.interactable = false;
             }
         }
+        FindObjectOfType<MonsterSpawningHandler>().UpdateUI();
     }
 
     private void ApplyUpgradeToSpecificMonster(MonsterType monsterType, int tier)
@@ -97,11 +101,20 @@ public class UpgradeButtonHandler : MonoBehaviour
         // Create a copy of the monsters list and convert to array to avoid modification issues
         Monster[] monstersCopy = MonsterManager.instance.GetMonsters().ToArray();
         
+        Debug.Log($"Applying {tier} upgrade to {monsterType} monsters");
+        
         foreach (Monster monster in monstersCopy)
         {
-            if (monster != null && monster.gameObject != null && monster.GetMonsterType() == monsterType)
+            if (monster != null && monster.gameObject != null)
             {
-                monster.Upgrade(tier);
+                MonsterType currentType = monster.GetMonsterType();
+                Debug.Log($"Checking monster {monster.name} of type {currentType}");
+                
+                if (currentType == monsterType)
+                {
+                    Debug.Log($"Upgrading monster {monster.name} to tier {tier}");
+                    monster.Upgrade(tier);
+                }
             }
         }
     }

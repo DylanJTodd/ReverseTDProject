@@ -59,9 +59,18 @@ public class MonsterManager : MonoBehaviour
         }
     }
 
-    public List<Monster> GetMonstersInRadius(Vector3 position, int radius)
+    public List<Monster> GetMonstersInRadius(Vector3 position, float radius)
     {
+        Debug.DrawLine(position, position + Vector3.up * radius, Color.red, 1f);
         return monsters.Where(monster => Vector3.Distance(monster.transform.position, position) <= radius).ToList();
+    }
+
+    public void ApplyDamageToMonstersInRadius(Vector3 position, float radius, int damage)
+    {
+        foreach (var monster in GetMonstersInRadius(position, radius))
+        {
+            monster.TakeDamage(damage);
+        }
     }
 
     public GameObject GetMonsterByName(string name)

@@ -5,7 +5,6 @@ public class IceTower : BaseTower
 {
     [Header("Ice Tower Settings")]
     public GameObject iceChunkPrefab;
-    public GameObject splashEffectPrefab;
     public float projectileSpeed = 10f;
 
     protected override void PerformAttack(Transform target)

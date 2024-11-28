@@ -257,7 +257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   maxHealth: 100
-  damage: 10
+  damage: 100
   level: 1
   cost: 10
   heightAdjust: 0

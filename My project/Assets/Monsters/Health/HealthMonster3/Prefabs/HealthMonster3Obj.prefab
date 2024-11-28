@@ -105,14 +105,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b75ec7485814c3e4f9c6a349fb484dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
-  maxHealth: 100
+  health: 400
+  maxHealth: 400
   damage: 10
   level: 1
   cost: 10
   heightAdjust: 0
   movementSpeed: 1
+  maxSpeed: 0
   attackRange: 1
   attackSpeed: 1
   healthBarPrefab: {fileID: 1533729058185714393, guid: 7c90982dd3d40b94e96deb5ed06bd406, type: 3}
-  maxSpeed: 0

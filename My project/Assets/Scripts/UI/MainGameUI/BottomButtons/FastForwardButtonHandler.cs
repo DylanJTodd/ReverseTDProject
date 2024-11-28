@@ -11,6 +11,13 @@ public class FastForwardButtonHandler : MonoBehaviour
 
     void Start()
     {
+        if (ffButton == null)
+            ffButton = GetComponent<Button>();
+        if (ffImage == null)
+            ffImage = GetComponent<Image>();
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+
         ffButton.onClick.AddListener(ToggleFF);
     }
 
@@ -22,8 +29,11 @@ public class FastForwardButtonHandler : MonoBehaviour
 
             ffImage.color = ColorUtility.TryParseHtmlString("#A68208", out var newColor) ? newColor : Color.white;
 
-            audioSource.volume = 0.8f;
-            audioSource.pitch = 0.8f;
+            if (audioSource != null)
+            {
+                audioSource.volume = 0.8f;
+                audioSource.pitch = 0.8f;
+            }
 
             isFF = false;
         }
@@ -33,8 +43,11 @@ public class FastForwardButtonHandler : MonoBehaviour
 
             ffImage.color = ColorUtility.TryParseHtmlString("#7B7B7B", out var newColor) ? newColor : Color.white;
 
-            audioSource.volume = 1f;
-            audioSource.pitch = 1f;
+            if (audioSource != null)
+            {
+                audioSource.volume = 1f;
+                audioSource.pitch = 1f;
+            }
 
             isFF = true;
         }

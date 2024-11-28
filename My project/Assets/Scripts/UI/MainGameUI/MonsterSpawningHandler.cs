@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEditor.Rendering;
 
 public class MonsterSpawningHandler : MonoBehaviour
 {
@@ -17,11 +18,9 @@ public class MonsterSpawningHandler : MonoBehaviour
     public GameObject lockPrefab;
     public GameObject CooldownPrefab;
     public MoneyHandler moneyHandler;
-
+    public int currentTier = 1;
+    public const int maxTier = 3;
     public float summonCooldown = 1f;
-
-    private int currentTier = 1;
-    private const int maxTier = 3;
     private float lastSummonTime;
     private Button[] row1Buttons;
     private Button[] row2Buttons;
@@ -31,6 +30,10 @@ public class MonsterSpawningHandler : MonoBehaviour
     public Sprite[] invisibleIcons;
     public SpawningMonster spawningMonster;
     private CanvasGroup row2CanvasGroup;
+    public int healthTier = 1;
+    public int strengthTier = 1;
+    public int speedTier = 1;
+    public int invisibleTier = 1;
 
     private Dictionary<string, bool> unlockedMonsters = new Dictionary<string, bool>();
     private Dictionary<Button, bool> buttonCostDisplayed = new Dictionary<Button, bool>();
@@ -146,16 +149,34 @@ public class MonsterSpawningHandler : MonoBehaviour
         }
     }
 
-    void AssignButtonListeners(Button[] buttons, int tier, bool isRow2)
+    void AssignButtonListeners(Button[] buttons, bool isRow2)
     {
-        if (tier < 1 || tier > maxTier) return;
-
         string[] monsterTypes = { "Health", "Strength", "Speed", "Invisible" };
 
         for (int i = 0; i < buttons.Length; i++)
         {
+            int tier = 1;
             string monsterType = monsterTypes[i];
+
+            switch (monsterType)
+            {
+                case "Health":
+                    tier = healthTier;
+                    break;
+                case "Strength":
+                    tier = strengthTier;
+                    break;
+                case "Speed":
+                    tier = speedTier;
+                    break;
+                case "Invisible":
+                    tier = invisibleTier;
+                    break;
+            }
+
             string monsterName = $"{monsterType}Monster{tier}";
+
+            Debug.Log($"Monster name: {monsterName}");
 
             int capturedIndex = i;
             string capturedMonsterType = monsterType;
@@ -409,7 +430,7 @@ public class MonsterSpawningHandler : MonoBehaviour
         return null;
     }
 
-    void UpdateUI()
+    public void UpdateUI()
     {
         upgradeCounterText.text = $"{currentTier}";
 
@@ -435,8 +456,8 @@ public class MonsterSpawningHandler : MonoBehaviour
             row2CanvasGroup.interactable = true;
         }
 
-        AssignButtonListeners(row1Buttons, currentTier, false);
-        AssignButtonListeners(row2Buttons, currentTier - 1, true);
+        AssignButtonListeners(row1Buttons, false);
+        AssignButtonListeners(row2Buttons, true);
     }
 
     void SetArrowOpacity(Button arrow, float alpha, bool interactable)
@@ -450,14 +471,8 @@ public class MonsterSpawningHandler : MonoBehaviour
     }
 
     int GetUnlockCost(int tier)
-    {
-        switch (tier)
-        {
-            case 1: return 150;
-            case 2: return 550;
-            case 3: return 1500;
-            default: return 0;
-        }
+    {   
+        return 150;
     }
 
     private int GetMonsterCost(string monsterName)

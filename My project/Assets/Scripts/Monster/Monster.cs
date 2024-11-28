@@ -59,34 +59,39 @@ public abstract class Monster : MonoBehaviour
 
     private void InitializeHealthBar()
     {
+        // Check if we already have a health bar as a child
+        HealthBar existingHealthBar = GetComponentInChildren<HealthBar>();
+        if (existingHealthBar != null)
+        {
+            healthBar = existingHealthBar;
+            healthBarTransform = existingHealthBar.transform;
+            healthBar.SetType("monster");
+            healthBar.SetMaxHealth(maxHealth);
+            healthBar.SetHealth(health);
+            return;
+        }
+
         Debug.Log("Initializing health bar");
         if (healthBarPrefab != null && mainCamera != null)
         {
-            // Create the health bar at the monster's position
             GameObject healthBarObj = Instantiate(healthBarPrefab);
             if (healthBarObj != null)
             {
-                // Parent first, then position
                 healthBarObj.transform.SetParent(transform);
                 healthBarObj.transform.localPosition = Vector3.up * 2f;
                 
-                // Get and setup Canvas
                 Canvas canvas = healthBarObj.GetComponentInChildren<Canvas>();
                 if (canvas != null)
                 {
                     canvas.renderMode = RenderMode.WorldSpace;
                     canvas.worldCamera = mainCamera;
-                    canvas.sortingOrder = 100; // Make sure it renders on top
+                    canvas.sortingOrder = 100;
                     
-                    // Reset the Canvas's transform
                     canvas.transform.localPosition = Vector3.zero;
                     canvas.transform.localRotation = Quaternion.identity;
                     canvas.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
-                    
-                    Debug.Log($"Canvas setup complete - Camera: {canvas.worldCamera}, RenderMode: {canvas.renderMode}");
                 }
                 
-                // Get and setup HealthBar component
                 HealthBar healthBarComponent = healthBarObj.GetComponentInChildren<HealthBar>();
                 if (healthBarComponent != null)
                 {

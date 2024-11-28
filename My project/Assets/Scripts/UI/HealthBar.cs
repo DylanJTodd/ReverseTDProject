@@ -30,6 +30,7 @@ public class HealthBar : MonoBehaviour
     public void SetMaxHealth(int health)
     {
         slider.maxValue = health;
+        slider.value = health;
     }
 
     private void Awake()
@@ -43,7 +44,6 @@ public class HealthBar : MonoBehaviour
         if (slider != null)
         {
             fillImage = slider.fillRect.GetComponent<Image>();
-            slider.value = slider.maxValue;
         }
         else
         {

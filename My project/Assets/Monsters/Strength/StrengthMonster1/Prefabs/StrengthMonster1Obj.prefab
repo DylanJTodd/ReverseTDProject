@@ -1722,7 +1722,7 @@ GameObject:
   - component: {fileID: 578376449398627443}
   - component: {fileID: 7389507112651452681}
   - component: {fileID: -9169386900900285103}
-  - component: {fileID: 9030681581151986659}
+  - component: {fileID: 6925833197078478857}
   m_Layer: 0
   m_Name: StrengthMonster1Obj
   m_TagString: Untagged
@@ -1802,7 +1802,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1.75, z: 0.5}
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &9030681581151986659
+--- !u!114 &6925833197078478857
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1811,7 +1811,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4493914613880827488}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a617efca52d814446860fb2899239fcf, type: 3}
+  m_Script: {fileID: 11500000, guid: d37aced0ac1d6e542991dc7c2ef64a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
@@ -1824,7 +1824,7 @@ MonoBehaviour:
   maxSpeed: 0
   attackRange: 1
   attackSpeed: 1
-  healthBarPrefab: {fileID: 1533729058185714393, guid: 7c90982dd3d40b94e96deb5ed06bd406, type: 3}
+  healthBarPrefab: {fileID: 0}
 --- !u!1 &4710940672626480558
 GameObject:
   m_ObjectHideFlags: 0

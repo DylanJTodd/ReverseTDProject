@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5580418148238847777}
   - component: {fileID: 2887973219086989985}
   - component: {fileID: 3796895968041351956}
+  - component: {fileID: 8195396469838217471}
   m_Layer: 0
   m_Name: Ice Shard
   m_TagString: Untagged
@@ -83,3 +84,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8195396469838217471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3821957744458368610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c9f65928b5bdf244abbc9182fb0cf19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 10
+  splashRadius: 2
+  damage: 10
+  splashEffectPrefab: {fileID: 373220457795684418, guid: c1f5d5d85463fad44a2e520bd17284d8, type: 3}
