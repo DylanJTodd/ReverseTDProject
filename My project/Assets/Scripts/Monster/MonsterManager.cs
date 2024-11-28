@@ -29,6 +29,11 @@ public class MonsterManager : MonoBehaviour
     public static MonsterManager instance;
     public List<Monster> monsters = new List<Monster>();
 
+    public void Update()
+    {
+        CleanupDestroyedMonsters();
+    }
+
     private void Awake()
     {
         if (instance == null)
@@ -53,6 +58,16 @@ public class MonsterManager : MonoBehaviour
 
     public void UnregisterMonster(Monster monster)
     {
+        if (monster == null)
+        {
+            Debug.LogWarning("Attempted to unregister null monster");
+            return;
+        }
+
+        // Clean up any null entries first
+        monsters.RemoveAll(m => m == null);
+        
+        // Then remove the specific monster if it exists
         if (monsters.Contains(monster))
         {
             monsters.Remove(monster);
@@ -170,9 +185,9 @@ public class MonsterManager : MonoBehaviour
 
     public void ReplaceMonster(GameObject currentMonster, MonsterType type, int tier)
     {
-        if (tier < 1 || tier > 3)
+        if (currentMonster == null)
         {
-            Debug.LogError($"Invalid tier: {tier}. Tier must be between 1 and 3.");
+            Debug.LogError("Attempted to replace null monster");
             return;
         }
 
@@ -180,7 +195,15 @@ public class MonsterManager : MonoBehaviour
         Vector3 position = currentMonster.transform.position;
         Quaternion rotation = currentMonster.transform.rotation;
 
-        // Get movement component data before destroying
+        // Get and validate old monster component first
+        Monster oldMonsterComponent = currentMonster.GetComponent<Monster>();
+        if (oldMonsterComponent != null)
+        {
+            // Unregister before any other operations
+            UnregisterMonster(oldMonsterComponent);
+        }
+
+        // Get movement component data
         MonsterMovement oldMovement = currentMonster.GetComponent<MonsterMovement>();
         if (oldMovement == null)
         {
@@ -188,34 +211,93 @@ public class MonsterManager : MonoBehaviour
             return;
         }
 
-        // Get the appropriate prefab name based on type and tier
-        string newMonsterName = $"{type}Monster{tier}";
-        if (type == MonsterType.Ethernal)
+        // Store necessary data
+        int endPathNumber = oldMovement.endPathNumber;
+        CastleHealth castleHealth = oldMovement.castleHealth;
+
+        // Create new monster
+        string newMonsterName = type == MonsterType.Ethernal 
+            ? $"InvisibleMonster{tier}" 
+            : $"{type}Monster{tier}";
+
+        GameObject prefab = GetMonsterPrefab(newMonsterName);
+        if (prefab == null)
         {
-            newMonsterName = $"InvisibleMonster{tier}";
+            Debug.LogError($"Failed to get prefab for {newMonsterName}");
+            return;
         }
 
-        // Create the new monster
-        GameObject newMonster = CreateNewMonster(newMonsterName);
+        GameObject newMonster = Instantiate(prefab);
         if (newMonster != null)
         {
-            // Set the position and rotation
+            // Set basic properties
+            newMonster.name = newMonsterName;
             newMonster.transform.position = position;
             newMonster.transform.rotation = rotation;
+            newMonster.tag = "Monster";
 
-            // Add and initialize movement component
-            MonsterMovement newMovement = newMonster.AddComponent<MonsterMovement>();
-            newMovement.Initialize(0, newMonster, oldMovement.endPathNumber);
-            newMovement.castleHealth = oldMovement.castleHealth;
+            // Remove any existing Monster component from the prefab
+            Monster existingMonster = newMonster.GetComponent<Monster>();
+            if (existingMonster != null)
+            {
+                Destroy(existingMonster);
+            }
+
+            // Add the appropriate Monster component
+            Monster newMonsterComponent = null;
+            switch (type)
+            {
+                case MonsterType.Health:
+                    newMonsterComponent = newMonster.AddComponent<HealthMonster>();
+                    break;
+                case MonsterType.Strength:
+                    newMonsterComponent = newMonster.AddComponent<StrengthMonster>();
+                    break;
+                case MonsterType.Speed:
+                    newMonsterComponent = newMonster.AddComponent<SpeedMonster>();
+                    break;
+                case MonsterType.Ethernal:
+                    newMonsterComponent = newMonster.AddComponent<EthernalMonster>();
+                    break;
+            }
+
+            if (newMonsterComponent == null)
+            {
+                Debug.LogError($"Failed to add monster component for type {type}");
+                Destroy(newMonster);
+                return;
+            }
+
+            // Set up movement
+            MonsterMovement newMovement = newMonster.GetComponent<MonsterMovement>();
+            if (newMovement == null)
+            {
+                newMovement = newMonster.AddComponent<MonsterMovement>();
+            }
+            
+            // Initialize movement with stored data
+            newMovement.Initialize(0, newMonster, endPathNumber);
+            newMovement.castleHealth = castleHealth;
+
+            // Register new monster before destroying old one
+            RegisterMonster(newMonsterComponent);
 
             // Unregister and destroy old monster
-            Monster oldMonsterComponent = currentMonster.GetComponent<Monster>();
-            UnregisterMonster(oldMonsterComponent);
-            DestroyImmediate(currentMonster);
+            if (oldMonsterComponent != null)
+            {
+                UnregisterMonster(oldMonsterComponent);
+            }
+            
+            Destroy(currentMonster);
         }
         else
         {
             Debug.LogError($"Failed to create new monster of type {type} and tier {tier}");
         }
+    }
+
+    private void CleanupDestroyedMonsters()
+    {
+        monsters.RemoveAll(monster => monster == null || monster.gameObject == null);
     }
 }

@@ -16882,6 +16882,7 @@ MonoBehaviour:
   lockPrefab: {fileID: 330370963622199686, guid: ea8450ab9236720459af3a659e73e134, type: 3}
   CooldownPrefab: {fileID: 4506709109407651700, guid: 70e46c2f3163787468a7e7e0ef74e3d8, type: 3}
   moneyHandler: {fileID: 1747521858}
+  currentTier: 1
   summonCooldown: 1
   healthIcons:
   - {fileID: 21300000, guid: 574fdbda231180e439a7e40c3ecf20e0, type: 3}
@@ -16900,6 +16901,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 928082306479f394184ea064c46daf35, type: 3}
   - {fileID: 21300000, guid: 592600d4cd0776e43a975558028b820a, type: 3}
   spawningMonster: {fileID: 2006808096}
+  healthTier: 1
+  strengthTier: 1
+  speedTier: 1
+  invisibleTier: 1
 --- !u!224 &579763685
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19894,6 +19899,63 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 663370282}
   m_Mesh: {fileID: -837091336493386933, guid: d05fa8828be199048bb709f826cc3c53, type: 3}
+--- !u!1001 &665844815
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6178549627241722691, guid: 4959a14542486eb4a9fed9588a6a89aa, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 21.38
+      objectReference: {fileID: 0}
+    - target: {fileID: 6178549627241722691, guid: 4959a14542486eb4a9fed9588a6a89aa, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -10.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 6178549627241722691, guid: 4959a14542486eb4a9fed9588a6a89aa, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 10.025272
+      objectReference: {fileID: 0}
+    - target: {fileID: 6178549627241722691, guid: 4959a14542486eb4a9fed9588a6a89aa, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6178549627241722691, guid: 4959a14542486eb4a9fed9588a6a89aa, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.00000003774895
+      objectReference: {fileID: 0}
+    - target: {fileID: 6178549627241722691, guid: 4959a14542486eb4a9fed9588a6a89aa, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6178549627241722691, guid: 4959a14542486eb4a9fed9588a6a89aa, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6178549627241722691, guid: 4959a14542486eb4a9fed9588a6a89aa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6178549627241722691, guid: 4959a14542486eb4a9fed9588a6a89aa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6178549627241722691, guid: 4959a14542486eb4a9fed9588a6a89aa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6842461563814488569, guid: 4959a14542486eb4a9fed9588a6a89aa, type: 3}
+      propertyPath: m_Name
+      value: IceTower
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4959a14542486eb4a9fed9588a6a89aa, type: 3}
 --- !u!1001 &666755058
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -49861,6 +49923,63 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1776776959}
   m_Mesh: {fileID: 1815251945203946248, guid: a18e05c3226dd274caeb4a43212e40c8, type: 3}
+--- !u!1001 &1777202025
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6340399486670393705, guid: c51f9001cb111d64b8fbbbfc940c88dd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 33.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340399486670393705, guid: c51f9001cb111d64b8fbbbfc940c88dd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -10.61
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340399486670393705, guid: c51f9001cb111d64b8fbbbfc940c88dd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 18.84
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340399486670393705, guid: c51f9001cb111d64b8fbbbfc940c88dd, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340399486670393705, guid: c51f9001cb111d64b8fbbbfc940c88dd, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.00000003774895
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340399486670393705, guid: c51f9001cb111d64b8fbbbfc940c88dd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340399486670393705, guid: c51f9001cb111d64b8fbbbfc940c88dd, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340399486670393705, guid: c51f9001cb111d64b8fbbbfc940c88dd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340399486670393705, guid: c51f9001cb111d64b8fbbbfc940c88dd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340399486670393705, guid: c51f9001cb111d64b8fbbbfc940c88dd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6680614032149220307, guid: c51f9001cb111d64b8fbbbfc940c88dd, type: 3}
+      propertyPath: m_Name
+      value: EarthTower
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c51f9001cb111d64b8fbbbfc940c88dd, type: 3}
 --- !u!1 &1777525509
 GameObject:
   m_ObjectHideFlags: 0
@@ -59006,3 +59125,5 @@ SceneRoots:
   - {fileID: 807710080}
   - {fileID: 43037802}
   - {fileID: 872260612}
+  - {fileID: 665844815}
+  - {fileID: 1777202025}

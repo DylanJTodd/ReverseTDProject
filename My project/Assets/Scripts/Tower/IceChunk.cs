@@ -24,9 +24,6 @@ public class IceChunk : MonoBehaviour
             // Optional: Destroy ice chunk if it reaches the target
             if (Vector3.Distance(transform.position, target.position) < 0.5f)
             {
-                // Debug position
-                Debug.Log($"Spawning effect at position: {transform.position}");
-                
                 // Spawn effect slightly above ground to be visible
                 Vector3 effectPosition = transform.position + Vector3.up * 0.5f;
                 

@@ -13,7 +13,7 @@ public class GameOver : MonoBehaviour
         gameOverScreen.alpha = 1;
         gameWon.alpha = 1;
         
-        StartCoroutine(LoadNextLevel());
+        StartCoroutine(LoadLevelSelect());
     }
 
     public void GameLost()
@@ -22,31 +22,10 @@ public class GameOver : MonoBehaviour
         gameLost.alpha = 1;
     }
 
-    private IEnumerator LoadNextLevel()
+    private IEnumerator LoadLevelSelect()
     {
         yield return new WaitForSeconds(5f);
 
-        // Get current level number from scene name
-        string currentSceneName = SceneManager.GetActiveScene().name;
-        if (currentSceneName.StartsWith("Level"))
-        {
-            string levelNumberStr = currentSceneName.Substring(5);
-            if (int.TryParse(levelNumberStr, out int currentLevel))
-            {
-                int nextLevel = currentLevel + 1;
-                string nextSceneName = $"Level{nextLevel}";
-
-                // Check if next level scene exists
-                if (Application.CanStreamedLevelBeLoaded(nextSceneName))
-                {
-                    SceneManager.LoadScene(nextSceneName);
-                }
-                else
-                {
-                    // If no more levels, return to level select
-                    SceneManager.LoadScene("LevelSelect");
-                }
-            }
-        }
+        SceneManager.LoadScene("LevelSelect");
     }
 }

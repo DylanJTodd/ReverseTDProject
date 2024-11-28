@@ -30,6 +30,12 @@ public class TowerManager : MonoBehaviour
 
     public void UnregisterTower(BaseTower tower)
     {
+        if (tower == null)
+        {
+            Debug.LogWarning("Attempted to unregister null tower");
+            return;
+        }
+
         if (towers.Contains(tower))
         {
             towers.Remove(tower);

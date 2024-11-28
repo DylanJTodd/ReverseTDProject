@@ -42,9 +42,8 @@ public class IceTower : BaseTower
     {
         if (Time.time >= lastAttackTime + attackRate)
         {
-            // Find the nearest monster within range
             Monster target = FindNearestMonster();
-            if (target != null)
+            if (target != null && target.gameObject != null)
             {
                 // Spawn ice chunk and throw towards the target
                 SpawnIceChunk(target.transform);
@@ -57,8 +56,15 @@ public class IceTower : BaseTower
     {
         Monster nearest = null;
         float minDistance = Mathf.Infinity;
-        foreach (Monster monster in MonsterManager.instance.monsters)
+        
+        // Get a clean list of monsters
+        var activeMonsters = MonsterManager.instance.GetMonsters();
+        
+        foreach (Monster monster in activeMonsters)
         {
+            // Skip if monster is null or destroyed
+            if (monster == null || monster.gameObject == null) continue;
+            
             float distance = Vector3.Distance(transform.position, monster.transform.position);
             if (distance < minDistance && distance <= attackRange)
             {

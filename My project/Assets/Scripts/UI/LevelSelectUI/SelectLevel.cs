@@ -9,7 +9,9 @@ public class SelectLevel : MonoBehaviour
     public static SelectLevel Instance { get; private set; }
 
     public Button[] levelButtons;
-    private int clearedLevels = 1;
+
+    // For class demo all levels are cleared
+    private int clearedLevels = 10;
 
     private void Awake()
     {
