@@ -16,10 +16,6 @@ public class FireTower : BaseTower
         Collider targetCollider = currentTarget.GetComponent<Collider>();
         Vector3 targetPosition = targetCollider != null ? targetCollider.bounds.center : currentTarget.position;
 
-        beamLineRenderer.SetPosition(0, transform.position);
-        beamLineRenderer.SetPosition(1, targetPosition);
-        beamLineRenderer.enabled = true;
-
         Monster monster = currentTarget.GetComponent<Monster>();
         if (monster != null)
         {
@@ -34,6 +30,13 @@ public class FireTower : BaseTower
         {
             beamLineRenderer.enabled = false;
             currentTarget = null;
+        }
+
+        if (currentTarget != null)
+        {
+            beamLineRenderer.enabled = true;
+            beamLineRenderer.SetPosition(0, transform.position);
+            beamLineRenderer.SetPosition(1, currentTarget.position);
         }
     }
 }
