@@ -42,12 +42,6 @@ public class SelectLevel : MonoBehaviour
 
     void LevelHandler(int levelNumber)
     {
-        Debug.Log(clearedLevels);
-        Debug.Log(levelNumber);
-        if (levelNumber > clearedLevels)
-        {
-            return;
-        }
         SceneManager.LoadScene($"Level{levelNumber}");
     }
 }
