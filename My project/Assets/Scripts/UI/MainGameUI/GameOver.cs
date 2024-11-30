@@ -26,6 +26,24 @@ public class GameOver : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
 
+        // Reset all game states
+        Time.timeScale = 1f;
+
+        // Find and destroy the PauseManager
+        PauseManager pauseManager = FindObjectOfType<PauseManager>();
+        if (pauseManager != null)
+        {
+            Destroy(pauseManager.gameObject);
+        }
+        
+        // Find and reset any other persistent managers that might affect the level select
+        // For example, if you have a SelectLevel manager:
+        SelectLevel selectLevel = FindObjectOfType<SelectLevel>();
+        if (selectLevel != null)
+        {
+            Destroy(selectLevel.gameObject);
+        }
+        
         SceneManager.LoadScene("LevelSelect");
     }
 }
