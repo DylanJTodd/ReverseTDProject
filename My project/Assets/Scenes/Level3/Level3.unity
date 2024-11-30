@@ -18941,6 +18941,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: LightningTower
       objectReference: {fileID: 0}
+    - target: {fileID: 8823669384510360690, guid: 67c3ba9c431f41f478cd22e2525e1c9c, type: 3}
+      propertyPath: maxChain
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823669384510360690, guid: 67c3ba9c431f41f478cd22e2525e1c9c, type: 3}
+      propertyPath: maxBranch
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823669384510360690, guid: 67c3ba9c431f41f478cd22e2525e1c9c, type: 3}
+      propertyPath: chainRadius
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -59765,6 +59777,7 @@ MonoBehaviour:
   gameplayUI: {fileID: 0}
   exitButton: {fileID: 343840532}
   resumeButton: {fileID: 439646952}
+  hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!224 &2074388740
 RectTransform:
   m_ObjectHideFlags: 0

@@ -31191,36 +31191,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6af2d410bf489d842a543a60d605af5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrains:
-  - {fileID: 240372647}
-  - {fileID: 296279821}
-  - {fileID: 342220785}
-  - {fileID: 508770653}
-  - {fileID: 636731229}
-  - {fileID: 730396801}
-  - {fileID: 753292214}
-  - {fileID: 991303747}
-  - {fileID: 1920230500}
-  splatmapResolution: 256
-  colorMapResolution: 256
-  layerSettings:
-  - enabled: 1
-    layer: {fileID: 8574412962073106934, guid: ce833e94f7f7eea468b012546444cf0c, type: 2}
-    modifierStack:
-    - {fileID: 0}
-  - enabled: 1
-    layer: {fileID: 8574412962073106934, guid: c997c17aa360cb749a27932fe3bdfcce, type: 2}
-    modifierStack:
-    - {fileID: 0}
-  - enabled: 1
-    layer: {fileID: 8574412962073106934, guid: 43cfca39c84755749b8b0fb20f7ad559, type: 2}
-    modifierStack: []
-  autoRepaint: 0
-  terrainListeners: []
-  bounds:
-    m_Center: {x: 114.04909, y: 60.029884, z: 19.053131}
-    m_Extent: {x: 299.90594, y: 60, z: 299.49997}
-  filterShader: {fileID: 4800000, guid: 0f44df78e3d64d9cb2616cac3d84cb77, type: 3}
 --- !u!1 &512843891
 GameObject:
   m_ObjectHideFlags: 0
@@ -42506,7 +42476,7 @@ Transform:
   m_GameObject: {fileID: 761934011}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 36.13, y: 0, z: 40.32}
+  m_LocalPosition: {x: 61.9, y: 0, z: 40.32}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -69702,7 +69672,7 @@ Transform:
   m_GameObject: {fileID: 1268112311}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 39.7, y: 0, z: -9.4}
+  m_LocalPosition: {x: 48.7, y: 0, z: -42.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -12,10 +12,7 @@ public class FireTower : BaseTower
     {
         currentTarget = target;
         if (currentTarget == null) return;
-
-        Collider targetCollider = currentTarget.GetComponent<Collider>();
-        Vector3 targetPosition = targetCollider != null ? targetCollider.bounds.center : currentTarget.position;
-
+        
         Monster monster = currentTarget.GetComponent<Monster>();
         if (monster != null)
         {
