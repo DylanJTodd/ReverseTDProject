@@ -53,7 +53,7 @@ public class EarthTower : BaseTower
     {
         // Draw attack range
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, maxRange);
+        Gizmos.DrawWireSphere(transform.position, attackRange);
 
         // Draw AOE radius
         Gizmos.color = Color.red;
