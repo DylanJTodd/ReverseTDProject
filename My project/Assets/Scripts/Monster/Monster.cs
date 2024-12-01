@@ -159,6 +159,15 @@ public abstract class Monster : MonoBehaviour
         }
     }
 
+    public void SetHealth(int amount)
+    {
+        health = amount;
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(health);
+        }
+    }
+
     public void AdjustSpeed(float percent, int slowTime)
     {
         float properPercent = 1 - (percent / 100f);

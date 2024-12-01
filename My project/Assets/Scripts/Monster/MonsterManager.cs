@@ -281,6 +281,7 @@ public class MonsterManager : MonoBehaviour
 
             // Register new monster before destroying old one
             RegisterMonster(newMonsterComponent);
+            newMonsterComponent.SetHealth(oldMonsterComponent.GetHealth());
 
             // Unregister and destroy old monster
             if (oldMonsterComponent != null)

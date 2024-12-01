@@ -74,10 +74,4 @@ public class IceTower : BaseTower
         }
         return nearest;
     }
-
-    private void OnDestroy()
-    {
-        // Unregister this tower from the TowerManager
-        TowerManager.instance.UnregisterTower(this);
-    }
 }

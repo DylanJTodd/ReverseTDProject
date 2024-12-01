@@ -10,7 +10,7 @@ public abstract class BaseTower : MonoBehaviour
     public float attackRate = 1f;
     public int splashRadius = 0;
     public float attackDamage = 10f;
-    
+
     [Header("References")]
     public MonsterDisplayHandler monsterDisplayHandler;
     protected float lastAttackTime;
@@ -20,7 +20,7 @@ public abstract class BaseTower : MonoBehaviour
     public GameObject healthBarPrefab; // Assign this in the inspector
     private Transform healthBarTransform;
     private Camera mainCamera;
-    private HealthBar healthBar;   
+    private HealthBar healthBar;
 
     protected virtual void Start()
     {
@@ -46,12 +46,14 @@ public abstract class BaseTower : MonoBehaviour
             healthBarInstance.transform.SetParent(transform);
             healthBarTransform = healthBarInstance.transform;
             healthBar = healthBarInstance.GetComponent<HealthBar>();
-            
+
             // Set initial health
             healthBar.SetMaxHealth(maxHealth);
             healthBar.SetHealth(health);
             healthBar.SetType("Tower");
-        } else {
+        }
+        else
+        {
             Debug.LogError("Health bar prefab is not assigned");
         }
     }
@@ -143,4 +145,12 @@ public abstract class BaseTower : MonoBehaviour
         return bestTarget?.transform;
     }
 
+    private void OnDestroy()
+    {
+        // Only unregister if TowerManager instance still exists
+        if (TowerManager.instance != null)
+        {
+            TowerManager.instance.UnregisterTower(this);
+        }
+    }
 }
